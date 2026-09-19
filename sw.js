@@ -1,4 +1,4 @@
-const C='n404-v10';
+const C='n404-v11';
 const PRECACHE=['/','/index.html','/dashboard.html','/404.html',
 '/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg',
 '/library/index.html',
