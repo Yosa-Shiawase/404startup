@@ -206,3 +206,19 @@ self.addEventListener('fetch',e=>{
 SW_EOF
 echo ">> sw.js regenerated (n404-v5)"
 echo ">> done."
+
+# ---- v2 post-pass: inject "waiting page" buttons + final sw.js ----
+python - << 'PP_EOF'
+import io,os
+def patch(path,btn):
+    if not os.path.exists(path): return
+    s=io.open(path,encoding='utf-8').read()
+    if 'WAITING PAGE' in s: return
+    s=s.replace('<a class="btn ghost" href="../" style="margin-left:10px">ALL GAMES</a>',
+        btn+'\n<a class="btn ghost" href="../" style="margin-left:10px">ALL GAMES</a>',1)
+    io.open(path,'w',encoding='utf-8').write(s)
+amb='<a class="btn ghost" style="margin-left:10px" href="{f}">&#9707; {l} WAITING PAGE</a>'
+patch('library/matrix/matrix_page.html',amb.format(f='rain.html',l='OPEN THE'))
+patch('library/sonar/sonar_page.html',amb.format(f='idle.html',l='OPEN THE'))
+print('ambient buttons injected')
+PP_EOF

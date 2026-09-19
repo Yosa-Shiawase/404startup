@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>White Rabbit — Waiting Room — 404STARTUP</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>
+html,body{height:100%;margin:0;background:#000306;overflow:hidden}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;color:#49E36F;-webkit-user-select:none;user-select:none}
+canvas{position:fixed;inset:0;display:block}
+.scan{position:fixed;inset:0;pointer-events:none;z-index:3;
+ background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px);opacity:.45}
+.scan::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 22vmin rgba(0,0,0,.65)}
+.back{position:fixed;top:max(14px,env(safe-area-inset-top));left:14px;z-index:5;color:#49E36F;text-decoration:none;
+ border:1px solid #1E5B33;padding:9px 13px;font-size:11px;letter-spacing:.14em;background:rgba(0,3,6,.65)}
+.back:hover{border-color:#49E36F}
+.msg{position:fixed;top:20%;left:0;right:0;text-align:center;z-index:4;pointer-events:none}
+.msg div{font-size:clamp(14px,2.6vw,24px);letter-spacing:.34em;text-shadow:0 0 14px rgba(73,227,111,.85);
+ opacity:0;transition:opacity .7s}
+.msg div.on{opacity:1}
+.tag{position:fixed;left:50%;transform:translateX(-50%);bottom:max(16px,env(safe-area-inset-bottom));z-index:5;
+ font-size:9.5px;letter-spacing:.3em;opacity:.5;text-align:center;width:92vw}
+</style></head><body>
+<canvas id="c"></canvas><div class="scan"></div>
+<a class="back" href="../">&#8592; WHITE RABBIT</a>
+<div class="msg">
+ <div>WAKE UP</div><div>FOLLOW THE WHITE RABBIT</div>
+ <div>THE PAGE YOU WANT IS NOT HERE</div><div>KNOCK, KNOCK</div>
+</div>
+<div class="tag">WAITING ROOM · TAP TO CHANGE FREQUENCY · SIGNAL: OFFLINE</div>
+<script>
+var c=document.getElementById('c'),x=c.getContext('2d'),W=0,H=0,cols=[],cw=16,mode=0,t=0;
+var PAL=[{h:'#D9FFE9',b:'#2AA257'},{h:'#F2FBFF',b:'#8FB8D8'}];
+var CH='アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789$#*+=/'.split('');
+function size(){var D=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+ c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0);
+ cw=Math.max(14,Math.floor(W/40));cols=[];
+ for(var i=0;i<Math.ceil(W/cw);i++)cols.push({y:Math.random()*-H,v:60+Math.random()*180});}
+addEventListener('resize',size);size();
+var msgs=document.querySelectorAll('.msg div'),mi=-1;
+setInterval(function(){for(var i=0;i<msgs.length;i++)msgs[i].classList.remove('on');
+ mi=(mi+1)%msgs.length;msgs[mi].classList.add('on');},4200);
+var last=performance.now(),raf=null;
+function frame(now){var dt=Math.min((now-last)/1000,.05);last=now;t+=dt;
+ var P=PAL[mode];
+ x.fillStyle='rgba(0,3,6,.16)';x.fillRect(0,0,W,H);
+ x.font=Math.floor(cw*.72)+'px ui-monospace,Menlo,monospace';x.textAlign='center';
+ for(var i=0;i<cols.length;i++){var d=cols[i];d.y+=d.v*dt;var gx=i*cw+cw/2;
+  x.fillStyle='rgba(42,162,87,.3)';x.fillText(CH[(i*7+(t*9|0))%CH.length],gx,d.y-cw);
+  x.fillStyle=P.b;
+  for(var j=2;j<7;j++)x.fillText(CH[(i*13+j*5+(t*7|0))%CH.length],gx,d.y-j*cw);
+  x.fillStyle=P.h;x.fillText(CH[(i*11+(t*11|0))%CH.length],gx,d.y);
+  if(d.y-cw*8>H){d.y=Math.random()*-H*.5;d.v=60+Math.random()*180;}}
+ raf=requestAnimationFrame(frame);}
+raf=requestAnimationFrame(frame);
+addEventListener('pointerdown',function(){mode=(mode+1)%PAL.length;
+ x.fillStyle='rgba(0,3,6,.85)';x.fillRect(0,0,W,H);});
+document.addEventListener('visibilitychange',function(){
+ if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null;}
+ else if(!raf){last=performance.now();raf=requestAnimationFrame(frame);}});
+</script></body></html>

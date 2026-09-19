@@ -838,7 +838,7 @@ Games.cab=(function(){
   F.x=(W-F.w)/2;F.y=Math.max(titleBottom()+46*U,H*.34);
   F.h=Math.min(F.h,H-F.y-70);
   pad.w=92*U;pad.x=F.x+F.w/2;buildBricks();stickBall();}
- function launch(){if(!ball.stuck)return;ball.stuck=false;
+ function launch(){if(!ball.stuck)return;ball.stuck=false;hideHint();
   const a=rand(-.5,.5),sp=(300+level*30)*U;
   ball.vx=Math.sin(a)*sp;ball.vy=-Math.cos(a)*sp;
   AudioFX.tone(500,760,.08,'square',.3);}
@@ -851,9 +851,9 @@ Games.cab=(function(){
   setTimeout(function(){showOver(INFO.cab.over,score,mx,nb);},500);}
  g.enter=function(){layout();reset();};
  g.start=start;g.restart=function(){reset();start();};g.resize=layout;
- g.key=function(){};g.release=function(){};
+ g.key=function(k){if((k===' '||k==='Enter')&&ball.stuck&&g.mode==='playing')launch();};g.release=function(){};
  g.pointer=function(e,type){
-  if(type==='down'){pHeld=true;tx=e.clientX;}
+  if(type==='down'){pHeld=true;tx=e.clientX;if(ball.stuck&&g.mode==='playing')launch();}
   else if(type==='move'){if(pHeld)tx=e.clientX;}
   else pHeld=false;};
  g.update=function(dt){t+=dt;shake=Math.max(0,shake-dt*26);
@@ -880,7 +880,7 @@ Games.cab=(function(){
      if(ox<oy)ball.vx*=-1;else ball.vy*=-1;
      AudioFX.eat();shake=3;break;}}
    if(ball.y>F.y+F.h+30){lives--;AudioFX.tone(200,60,.3,'sawtooth',.5);
-    if(lives<=0){die();return;}stickBall();return;}}
+    if(lives<=0){die();return;}stickBall();showHint(COARSE.matches?'TAP TO LAUNCH':'PRESS SPACE TO LAUNCH');return;}}
   bricks=bricks.filter(b=>!b.dead);
   setScore(score,true);
   if(!bricks.length){level++;buildBricks();stickBall();AudioFX.golden();}};

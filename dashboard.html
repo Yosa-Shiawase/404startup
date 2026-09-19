@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Dashboard — 404STARTUP</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F2E2C4;color:#2B1F12;
+ -webkit-tap-highlight-color:transparent;transition:background-color .8s,color .8s;min-height:100vh}
+body.orbit{background:#0A0E1B;color:#E9EDF6}
+.wrap{max-width:1100px;margin:0 auto;padding:0 clamp(16px,4vw,44px) 70px}
+header{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:2px solid currentColor}
+header b{letter-spacing:.22em;font-size:12px}
+header .sp{flex:1}
+.lnk{font-size:10.5px;letter-spacing:.12em;color:#C75B26;text-decoration:none;border:1.5px solid #C75B26;padding:8px 12px}
+#burger{margin-left:8px;display:flex;flex-direction:column;gap:5px;background:none;border:2px solid currentColor;border-radius:4px;padding:9px;cursor:pointer}
+#burger span{width:20px;height:2px;background:currentColor}
+#scrim{position:fixed;inset:0;z-index:65;background:rgba(10,8,14,.55);opacity:0;pointer-events:none;transition:opacity .3s}
+#scrim.open{opacity:1;pointer-events:auto}
+#menu{position:fixed;inset:0;z-index:70;background:#141019;color:#EFE6CC;display:flex;flex-direction:column;justify-content:center;
+ padding:0 clamp(24px,8vw,80px);clip-path:inset(0 0 100% 0);transition:clip-path .45s cubic-bezier(.7,0,.3,1)}
+#menu.open{clip-path:inset(0 0 0% 0)}
+#menu a{color:#EFE6CC;text-decoration:none;font-size:clamp(22px,5.5vw,46px);font-weight:700;padding:10px 0;
+ border-bottom:1px solid rgba(239,230,204,.12);display:flex;gap:16px;align-items:baseline}
+#menu a i{font-style:normal;font-size:11px;letter-spacing:.3em;color:#F2A65A}
+#menu a:hover{color:#F2A65A}
+#menuX{position:absolute;top:18px;right:20px;background:none;border:1.5px solid rgba(239,230,204,.3);color:#EFE6CC;font-size:16px;width:42px;height:42px;border-radius:50%;cursor:pointer}
+h1{font-size:clamp(28px,5.5vw,54px);margin:34px 0 6px;letter-spacing:.01em}
+.kick{font-size:10px;letter-spacing:.34em;color:#C75B26;margin-bottom:8px}
+.lead{opacity:.7;font-size:14px;line-height:1.75;max-width:56ch}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin:28px 0 8px}
+.tile{background:rgba(0,0,0,.05);border:2px solid currentColor;border-radius:8px;padding:18px}
+body.orbit .tile{border-color:#2A3458;background:#121A33}
+.tile .n{font-size:clamp(26px,4vw,40px);font-weight:800;color:#C75B26;line-height:1}
+body.orbit .tile .n{color:#FFB454}
+.tile .l{font-size:9.5px;letter-spacing:.24em;opacity:.65;margin-top:8px}
+h2{font-size:clamp(17px,2.4vw,24px);margin:38px 0 14px}
+h2 span{display:block;font-size:9.5px;letter-spacing:.3em;color:#C75B26;margin-bottom:8px}
+.scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.sc{background:#fff;border:2px solid currentColor;border-radius:8px;padding:16px;text-decoration:none;color:inherit;display:block;transition:transform .2s,box-shadow .2s}
+.sc:hover{transform:translateY(-5px);box-shadow:7px 7px 0 #C75B26}
+body.orbit .sc{background:#121A33;border-color:#2A3458}
+.sc b{font-size:13px;letter-spacing:.1em;display:block}
+.sc .v{font-size:clamp(24px,3vw,34px);font-weight:800;margin:8px 0 2px;color:#C75B26}
+body.orbit .sc .v{color:#FFB454}
+.sc .s{font-size:10px;letter-spacing:.18em;opacity:.6}
+footer{border-top:2px solid currentColor;margin-top:50px;padding:22px 0;text-align:center;font-size:11px;opacity:.75;line-height:2.1}
+footer a{color:#C75B26}
+#themeToggle{background:none;border:1px dashed #C75B26;color:#C75B26;font-family:inherit;font-size:10px;letter-spacing:.15em;padding:6px 13px;border-radius:3px;cursor:pointer;margin-left:8px}
+</style></head><body>
+<div id="scrim" onclick="closeMenu()"></div>
+<nav id="menu"><button id="menuX" onclick="closeMenu()">✕</button>
+ <a href="index.html"><i>01</i>HOME</a><a href="library/index.html"><i>02</i>LIBRARY</a>
+ <a href="dashboard.html"><i>03</i>DASHBOARD</a><a href="/404.html"><i>04</i>PLAY THE ARCADE ▸</a></nav>
+<div class="wrap">
+<header>
+ <svg viewBox="0 0 32 32" width="30"><polygon points="8,6 13,12 8,13" fill="#C75B26"/><polygon points="24,6 19,12 24,13" fill="#C75B26"/><polygon points="8,12 24,12 16,24" fill="#C75B26"/><polygon points="12,17 20,17 16,22" fill="#3A2A18"/></svg>
+ <b>404STARTUP</b><span class="sp"></span>
+ <a class="lnk" href="index.html">← HOME</a>
+ <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+</header>
+<div class="kick">// MISSION CONTROL</div>
+<h1>DASHBOARD</h1>
+<p class="lead">Every world on this site keeps your best score on this device — even fully offline. Here's everything you've conquered so far.</p>
+<div class="tiles" id="tiles"></div>
+<h2><span>YOUR SCORES</span>Best runs on this device</h2>
+<div class="scores" id="scores"></div>
+<p class="lead" style="margin-top:24px;font-size:12px">Note: the offline <b>404 arcade</b> keeps its own classic 3-world switcher (dunes · orbit · terminal) — that's the page your visitors see when their internet dies. The library pages above are single-game, no switcher, by design.</p>
+<footer>
+ <a href="library/index.html">library</a> · <a href="/404.html">arcade</a> ·
+ <a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">@yosashiawase</a>
+ <button id="themeToggle" onclick="toggleTheme()"></button>
+</footer>
+</div>
+<script src="/assets/library-manifest.js"></script>
+<script>
+var bk=document.getElementById('burger');
+function openMenu(){document.getElementById('menu').classList.add('open');document.getElementById('scrim').classList.add('open');}
+function closeMenu(){document.getElementById('menu').classList.remove('open');document.getElementById('scrim').classList.remove('open');}
+bk.addEventListener('click',function(){document.getElementById('menu').classList.contains('open')?closeMenu():openMenu();});
+function best(id){return Math.max(+(localStorage.getItem('n404_best_'+id)||0),+(localStorage.getItem('nf404_best_'+id)||0));}
+var cleared=0,cards='';
+N404_GAMES.forEach(function(g){var v=best(g.id);if(v>0)cleared++;
+ cards+='<a class="sc" href="library/'+g.dir+'/'+g.dir+'.html"><b>'+g.num+' · '+g.title+'</b>'+
+ '<div class="v">'+(v>0?String(v).padStart(6,'0'):'————')+'</div>'+
+ '<div class="s">'+(v>0?'BEST · PLAY AGAIN →':'NOT PLAYED YET · PLAY →')+'</div></a>';});
+document.getElementById('scores').innerHTML=cards;
+document.getElementById('tiles').innerHTML=
+ '<div class="tile"><div class="n">'+N404_GAMES.length+'</div><div class="l">WORLDS LIVE</div></div>'+
+ '<div class="tile"><div class="n">'+cleared+'</div><div class="l">WORLDS CLEARED</div></div>'+
+ '<div class="tile"><div class="n">2</div><div class="l">WAITING ROOMS</div></div>'+
+ '<div class="tile"><div class="n">∞</div><div class="l">OFFLINE MODE</div></div>';
+function applySiteTheme(){var on=localStorage.getItem('n404_site_theme')==='orbit';
+ document.body.classList.toggle('orbit',on);
+ var t=document.getElementById('themeToggle');if(t)t.textContent=on?'THEME: ORBIT ●':'THEME: SAND ●';}
+function toggleTheme(){if(localStorage.getItem('n404_orbit')!=='1')return;
+ localStorage.setItem('n404_site_theme',document.body.classList.contains('orbit')?'sand':'orbit');applySiteTheme();}
+if(localStorage.getItem('n404_orbit')==='1'){
+ document.getElementById('themeToggle').style.display='inline-block';applySiteTheme();}
+</script>
+</body></html>
