@@ -193,7 +193,24 @@ body.orbit #foxCount{background:#FFB454;color:#0A0E1B}
 .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
 @media(max-width:880px){.heroBtns .btn{width:100%;text-align:center}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
-</style></head>
+</style><style id="glassFx">
+/* let the scroll story read through the content */
+header{background:color-mix(in srgb,var(--sand) 68%,transparent)}
+.card{background:rgba(255,255,255,.8);
+ backdrop-filter:blur(5px) saturate(1.15);-webkit-backdrop-filter:blur(5px) saturate(1.15)}
+body.orbit .card{background:rgba(18,26,51,.76)}
+.quote{background:rgba(255,255,255,.8);
+ backdrop-filter:blur(5px) saturate(1.15);-webkit-backdrop-filter:blur(5px) saturate(1.15)}
+.stat{background:rgba(20,16,25,.84);
+ backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.dark{background:rgba(20,16,25,.86)}
+.marq{background:rgba(24,19,30,.85)}
+body.orbit .marq{background:rgba(26,33,58,.84)}
+@media(prefers-reduced-transparency:reduce){
+ .card,.quote,.stat{background:var(--paper)}
+ .dark,.marq{background:var(--dark)}}
+</style>
+</head>
 <body>
 <div id="prog"></div><div class="grain"></div>
 <style>

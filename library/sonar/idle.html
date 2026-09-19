@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Sonar — All Quiet — 404STARTUP</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <style>
 html,body{height:100%;margin:0;background:#04101A;overflow:hidden}
 body{font-family:ui-monospace,Menlo,Consolas,monospace;color:#9FE8DC;-webkit-user-select:none;user-select:none}
-canvas{position:fixed;top:0;left:0;display:block}
+canvas{position:fixed;top:0;left:0;display:block;touch-action:none}
+body{touch-action:none;overscroll-behavior:none}
 .scan{position:fixed;inset:0;pointer-events:none;z-index:3;
  background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px);opacity:.4}
 .back{position:fixed;top:max(14px,env(safe-area-inset-top));left:14px;z-index:5;color:#9FE8DC;text-decoration:none;
@@ -27,11 +28,15 @@ canvas{position:fixed;top:0;left:0;display:block}
 <div class="big" id="big">ALL QUIET</div>
 <div class="tag" id="tag">WAITING ROOM · TAP THE WATER TO PING · DEPTH 4,200 M</div>
 <script>
+document.addEventListener('gesturestart',function(e){e.preventDefault()});
+document.addEventListener('gesturechange',function(e){e.preventDefault()});
+document.addEventListener('gestureend',function(e){e.preventDefault();setTimeout(measure,80)});
 var c=document.getElementById('c'),x=c.getContext('2d');
 var clkEl=document.getElementById('clk'),ctEl=document.getElementById('ct');
 var bigEl=document.getElementById('big'),tagEl=document.getElementById('tag');
 var W=0,H=0,cx=0,cy=0,R=0,sweep=0,t=0,found=0,blips=[],rip=[];
 function measure(){
+ if(window.visualViewport&&window.visualViewport.scale>1.05)return;
  var vv=window.visualViewport,de=document.documentElement;
  W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
  H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
