@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="620" viewBox="600 85 660 620">
   <title>NIRAKSHAN backdrop - See. Predict. Intercept. (SIH 2026 - Team Cyphora)</title>
   <defs>
     <linearGradient id="hexGrad" x1="0" y1="0" x2="0" y2="1">
@@ -10,40 +10,13 @@
     </linearGradient>
   </defs>
 
-  <rect width="1280" height="720" fill="#FFFFFF"/>
-
-  <!-- LEFT ZONE: faint accents (safe behind text) -->
-  <g id="left-accents">
-    <polygon points="170,540 235,577.5 235,652.5 170,690 105,652.5 105,577.5" fill="none" stroke="#E2E9EF" stroke-width="4"/>
-    <path d="M68,170 H88 M78,160 V180" stroke="#D99000" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
-    <path d="M240,686 H260 M250,676 V696" stroke="#2E6DA4" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
-    <circle cx="240" cy="320" r="6" fill="#1F3A5F" opacity="0.3"/>
-    <circle cx="90" cy="420" r="7" fill="#D99000" opacity="0.4"/>
-    <circle cx="330" cy="500" r="5" fill="#0E8A5F" opacity="0.4"/>
-    <circle cx="420" cy="240" r="9" fill="none" stroke="#2E6DA4" stroke-width="5" opacity="0.5"/>
-  </g>
+  <rect x="600" y="85" width="660" height="620" fill="#FFFFFF"/>
 
   <!-- SIH HEX MOTIF -->
   <polygon id="hex-motif" points="920,180 1145.2,310 1145.2,570 920,700 694.8,570 694.8,310"
            fill="url(#hexGrad)" stroke="#E2E9EF" stroke-width="4"/>
 
-  <!-- BINARY RIVER (SIH brain motif) -->
-  <g id="binary-river">
-    <rect x="1244" y="150" width="10" height="16" rx="2.5" fill="#1F3A5F" opacity="0.5"/>
-    <rect x="1244" y="186" width="10" height="16" rx="2.5" fill="#0E8A5F" opacity="0.55"/>
-    <rect x="1244" y="222" width="10" height="16" rx="2.5" fill="#1F3A5F" opacity="0.35"/>
-    <rect x="1244" y="258" width="10" height="16" rx="2.5" fill="#D99000" opacity="0.55"/>
-    <rect x="1244" y="294" width="10" height="16" rx="2.5" fill="#2E6DA4" opacity="0.5"/>
-    <rect x="1244" y="330" width="10" height="16" rx="2.5" fill="#1F3A5F" opacity="0.5"/>
-    <rect x="1244" y="366" width="10" height="16" rx="2.5" fill="#0E8A5F" opacity="0.35"/>
-    <rect x="1244" y="402" width="10" height="16" rx="2.5" fill="#1F3A5F" opacity="0.55"/>
-    <rect x="1244" y="438" width="10" height="16" rx="2.5" fill="#D99000" opacity="0.4"/>
-    <rect x="1244" y="474" width="10" height="16" rx="2.5" fill="#2E6DA4" opacity="0.5"/>
-    <rect x="1244" y="510" width="10" height="16" rx="2.5" fill="#1F3A5F" opacity="0.35"/>
-    <rect x="1244" y="546" width="10" height="16" rx="2.5" fill="#0E8A5F" opacity="0.55"/>
-    <rect x="1244" y="582" width="10" height="16" rx="2.5" fill="#1F3A5F" opacity="0.5"/>
-    <rect x="1244" y="618" width="10" height="16" rx="2.5" fill="#D99000" opacity="0.45"/>
-  </g>
+
 
   <!-- SATELLITE (ESRI/OSM imagery feed) -->
   <g id="satellite" transform="translate(650,140) rotate(-18)" opacity="0.55">
@@ -94,6 +67,7 @@
       <circle cx="1075" cy="320" r="14" fill="#FFFFFF"/>
       <path transform="translate(1075,322) scale(0.32)" d="M-22,-26 H22 M-18,-26 V28 M-18,-26 H2 A16,16 0 0 1 2,6 H-18 M-18,15 H20 M-18,28 H20" fill="none" stroke="#1F3A5F" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
+    
   </g>
 
   <!-- PIPELINE: DATA -> DECISION -> ACTION -->
@@ -157,6 +131,23 @@
   </g>
 
   <!-- BADGE: QR FRAUD FORENSICS -->
+  <g id="badge-qr" transform="translate(1132.2,562.5)">
+    <circle r="62" fill="#D99000" opacity="0.13"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
+    <circle r="54" fill="#FFFFFF" stroke="#D99000" stroke-width="4"/>
+    <g transform="scale(0.92)">
+      <rect x="-25" y="-25" width="21" height="21" rx="5" fill="none" stroke="#D99000" stroke-width="5"/>
+      <rect x="-18" y="-18" width="7" height="7" rx="1.5" fill="#D99000"/>
+      <rect x="4" y="-25" width="21" height="21" rx="5" fill="none" stroke="#D99000" stroke-width="5"/>
+      <rect x="11" y="-18" width="7" height="7" rx="1.5" fill="#D99000"/>
+      <rect x="-25" y="4" width="21" height="21" rx="5" fill="none" stroke="#D99000" stroke-width="5"/>
+      <rect x="-18" y="11" width="7" height="7" rx="1.5" fill="#D99000"/>
+      <rect x="4" y="4" width="9" height="9" rx="1.5" fill="#D99000"/>
+      <rect x="16" y="8" width="9" height="9" rx="1.5" fill="#D99000"/>
+      <rect x="8" y="17" width="9" height="9" rx="1.5" fill="#D99000"/>
+    </g>
+  </g>
+
+  <!-- BADGE: SEC.102 DOSSIER -->
   <g id="badge-qr" transform="translate(1132.2,562.5)">
     <circle r="62" fill="#D99000" opacity="0.13"/><circle cy="5" r="54" fill="#1F3A5F" opacity="0.10"/>
     <circle r="54" fill="#FFFFFF" stroke="#D99000" stroke-width="4"/>
