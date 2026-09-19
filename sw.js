@@ -1,4 +1,4 @@
-const C='n404-v9';
+const C='n404-v10';
 const PRECACHE=['/','/index.html','/dashboard.html','/404.html',
 '/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg',
 '/library/index.html',
@@ -14,6 +14,9 @@ self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(
 self.addEventListener('activate',e=>e.waitUntil(
   caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
+  const u=new URL(e.request.url);
+  if(e.request.method==='GET'&&u.origin===location.origin&&u.pathname.startsWith('/assets/')){
+    e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));return;}
   if(e.request.mode!=='navigate')return;
   e.respondWith(fetch(e.request).then(res=>{
     if(res&&res.ok){const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp)).catch(()=>{});}
