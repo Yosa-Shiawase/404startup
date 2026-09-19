@@ -14,20 +14,22 @@ canvas{position:fixed;top:0;left:0;display:block}
  border:1px solid #2E6B63;padding:9px 13px;font-size:11px;letter-spacing:.14em;background:rgba(4,16,26,.7)}
 .back:hover{border-color:#5CF2D6}
 .hud{position:fixed;top:max(16px,env(safe-area-inset-top));right:16px;z-index:5;text-align:right;
- font-size:10px;letter-spacing:.22em;opacity:.75;line-height:1.9}
+ font-size:10px;letter-spacing:.22em;opacity:.8;line-height:1.9}
 .big{position:fixed;left:50%;transform:translate(-50%,0);z-index:5;font-size:clamp(13px,2.4vw,20px);
- letter-spacing:.42em;opacity:.5;pointer-events:none;animation:pl 3s ease-in-out infinite}
-@keyframes pl{50%{opacity:.15}}
+ letter-spacing:.42em;opacity:.55;pointer-events:none;animation:pl 3s ease-in-out infinite}
+@keyframes pl{50%{opacity:.18}}
 .tag{position:fixed;left:50%;transform:translate(-50%,0);z-index:5;font-size:9.5px;letter-spacing:.3em;
- opacity:.4;width:94vw;text-align:center;white-space:nowrap}
+ opacity:.45;width:94vw;text-align:center;white-space:nowrap}
 </style></head><body>
 <canvas id="c"></canvas><div class="scan"></div>
 <a class="back" href="../">&#8592; SONAR CONTACT</a>
-<div class="hud" id="hud">SONAR // PASSIVE<br><span id="clk">--:--:--</span> UTC<br>CONTACTS: 0</div>
+<div class="hud">SONAR // PASSIVE<br><span id="clk">--:--:--</span> UTC<br>CONTACTS: <span id="ct">0</span></div>
 <div class="big" id="big">ALL QUIET</div>
 <div class="tag" id="tag">WAITING ROOM · TAP THE WATER TO PING · DEPTH 4,200 M</div>
 <script>
 var c=document.getElementById('c'),x=c.getContext('2d');
+var clkEl=document.getElementById('clk'),ctEl=document.getElementById('ct');
+var bigEl=document.getElementById('big'),tagEl=document.getElementById('tag');
 var W=0,H=0,cx=0,cy=0,R=0,sweep=0,t=0,found=0,blips=[],rip=[];
 function measure(){
  var vv=window.visualViewport,de=document.documentElement;
@@ -38,51 +40,54 @@ function measure(){
  c.width=W*D;c.height=H*D;c.style.width=W+'px';c.style.height=H+'px';
  x.setTransform(D,0,0,D,0,0);
  cx=W/2;cy=H*0.47;R=Math.min(W,H)*0.34;
- document.getElementById('big').style.top=Math.round(H*0.84)+'px';
- document.getElementById('tag').style.top=Math.round(H-26)+'px';
+ bigEl.style.top=Math.round(H*0.82)+'px';
+ tagEl.style.top=Math.round(H-26)+'px';
 }
 addEventListener('resize',measure);
 if(window.visualViewport){visualViewport.addEventListener('resize',measure);visualViewport.addEventListener('scroll',measure);}
-addEventListener('orientationchange',function(){setTimeout(measure,150);});
+addEventListener('orientationchange',function(){setTimeout(measure,150)});
 setInterval(measure,500);
 measure();
 function spawn(){var a=Math.random()*6.2832;
  blips.push({a:a,r:R*(.2+Math.random()*.72),ping:false,life:0});}
+spawn();spawn();
 setInterval(function(){if(blips.length<5&&Math.random()<.7)spawn();},1500);
 setInterval(function(){var d=new Date();
- document.getElementById('clk').textContent=('0'+d.getUTCHours()).slice(-2)+':'+('0'+d.getUTCMinutes()).slice(-2)+':'+('0'+d.getUTCSeconds()).slice(-2);},500);
+ clkEl.textContent=('0'+d.getUTCHours()).slice(-2)+':'+('0'+d.getUTCMinutes()).slice(-2)+':'+('0'+d.getUTCSeconds()).slice(-2);},500);
 addEventListener('pointerdown',function(e){rip.push({x:e.clientX,y:e.clientY,t:0});});
 var last=performance.now(),raf=null;
 function frame(now){var dt=Math.min((now-last)/1000,.05);last=now;t+=dt;
  sweep=(sweep+dt*.9)%6.2832;
- x.fillStyle='#04101A';x.fillRect(0,0,W,H);
+ var bg=x.createRadialGradient(cx,cy,0,cx,cy,R*1.25);
+ bg.addColorStop(0,'rgba(15,52,66,.9)');bg.addColorStop(1,'#04101A');
+ x.fillStyle=bg;x.fillRect(0,0,W,H);
  x.save();x.translate(cx,cy);
- x.strokeStyle='rgba(92,242,214,.14)';x.lineWidth=1.5;
+ x.strokeStyle='rgba(92,242,214,.22)';x.lineWidth=1.5;
  for(var i=1;i<=4;i++){x.beginPath();x.arc(0,0,R*i/4,0,6.2832);x.stroke();}
- x.strokeStyle='rgba(92,242,214,.07)';
+ x.strokeStyle='rgba(92,242,214,.1)';
  x.beginPath();x.moveTo(-R,0);x.lineTo(R,0);x.moveTo(0,-R);x.lineTo(0,R);x.stroke();
- for(var i=0;i<26;i++){var a=sweep-i*.02;
-  x.strokeStyle='rgba(92,242,214,'+(.32*(1-i/26)).toFixed(3)+')';x.lineWidth=i?2:3;
+ for(var i=0;i<40;i++){var a=sweep-i*.02;
+  x.strokeStyle='rgba(92,242,214,'+(.5*(1-i/40)).toFixed(3)+')';x.lineWidth=i?2:3;
   x.beginPath();x.moveTo(0,0);x.lineTo(Math.cos(a)*R,Math.sin(a)*R);x.stroke();}
  for(var i=blips.length-1;i>=0;i--){var b=blips[i];
   var da=Math.abs((((sweep-b.a)%6.2832)+6.2832)%6.2832);
   if(da<.07||da>6.2832-.07){
-   if(!b.ping){b.ping=true;b.life=1;found++;}
+   if(!b.ping){b.ping=true;b.life=1;found++;ctEl.textContent=found;}
    else b.life-=dt*.22;}
   if(b.ping&&b.life>0){var bx=Math.cos(b.a)*b.r,by=Math.sin(b.a)*b.r;
-   x.globalAlpha=Math.max(b.life,.12);x.fillStyle='#5CF2D6';
+   x.globalAlpha=Math.max(b.life,.15);x.fillStyle='#5CF2D6';
    x.beginPath();x.arc(bx,by,4.5,0,6.2832);x.fill();
-   x.strokeStyle='#5CF2D6';x.globalAlpha=Math.max(b.life,.1)*.5;
+   x.strokeStyle='#5CF2D6';x.globalAlpha=Math.max(b.life,.12)*.6;
    x.beginPath();x.arc(bx,by,4.5+(1-b.life)*14,0,6.2832);x.stroke();
    x.globalAlpha=1;}
   if(b.ping&&b.life<=0)blips.splice(i,1);}
- x.fillStyle='#5CF2D6';x.beginPath();x.arc(0,0,3.5,0,6.2832);x.fill();
+ x.fillStyle='#5CF2D6';x.shadowColor='#5CF2D6';x.shadowBlur=8;
+ x.beginPath();x.arc(0,0,4,0,6.2832);x.fill();x.shadowBlur=0;
  x.restore();
  for(var i=0;i<rip.length;i++){var r=rip[i];r.t+=dt;
   x.globalAlpha=1-r.t/.6;x.strokeStyle='rgba(92,242,214,.5)';
   x.beginPath();x.arc(r.x,r.y,6+r.t*90,0,6.2832);x.stroke();x.globalAlpha=1;}
  rip=rip.filter(function(r){return r.t<.6;});
- document.getElementById('hud').innerHTML='SONAR // PASSIVE<br>'+document.getElementById('clk').textContent+' UTC<br>CONTACTS: '+found;
  raf=requestAnimationFrame(frame);}
 raf=requestAnimationFrame(frame);
 document.addEventListener('visibilitychange',function(){
