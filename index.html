@@ -507,7 +507,7 @@ function closeMenu(){document.getElementById('menu').classList.remove('open');
 bk.addEventListener('click',function(){document.getElementById('menu').classList.contains('open')?closeMenu():openMenu();});
 
 /* marquee */
-var words='404 NOT FOUND ✦ PLAY IT ANYWAY ✦ 12 WORLDS LIVE ✦ WORKS OFFLINE ✦ ZERO DEPENDENCIES ✦ CUSTOM BUILDS OPEN ✦ ';
+var words='404 NOT FOUND ✦ PLAY IT ANYWAY ✦ 13 WORLDS LIVE ✦ WORKS OFFLINE ✦ ZERO DEPENDENCIES ✦ CUSTOM BUILDS OPEN ✦ ';
 document.getElementById('mq').innerHTML='<span>'+words+words+'</span><span>'+words+words+'</span>';
 
 /* scroll progress */
@@ -520,7 +520,7 @@ B.innerHTML=N404_GAMES.slice(0,3).map(function(g,i){
  return '<a class="card '+(i===0?'b7':'b5')+' rv d'+(i+1)+'" href="library/'+g.dir+'/'+g.dir+'_page.html">'+
  '<span class="badge">'+g.num+'</span><div class="art">'+N404_ART[g.id]()+'</div>'+
  '<h3>'+g.title+'</h3><p>'+g.short+'</p><span class="go">VIEW &amp; PLAY →</span></a>';}).join('')+
- '<div class="stat b7 rv d1"><div class="num">12</div><div class="lbl">WORLDS LIVE — GAMES + WAITING ROOMS</div>'+
+ '<div class="stat b7 rv d1"><div class="num">13</div><div class="lbl">WORLDS LIVE — GAMES + WAITING ROOMS</div>'+
  '<div class="row"><div><b>100%</b><div class="lbl">OFFLINE</div></div><div><b>0</b><div class="lbl">DEPENDENCIES</div></div>'+
  '<div><b>1</b><div class="lbl">FILE</div></div></div>'+
  '<a class="btn ghost" style="margin-top:8px;align-self:flex-start;border-color:#E9EDF6;color:#E9EDF6" href="library/index.html">SEE ALL TWELVE →</a></div>';

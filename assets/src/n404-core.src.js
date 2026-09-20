@@ -104,7 +104,8 @@ const INFO={
   deep:{name:'ABYSS DRIFT',meta:'#04202F',
     hintC:'TAP TO DIVE \u00B7 HOLD TO RISE',
     hintK:'HOLD SPACE / \u2191 TO RISE \u00B7 RELEASE TO SINK',
-    over:'CRUSH DEPTH'}
+    over:'CRUSH DEPTH'},
+  clock:{name:'MINUTE HAND',meta:'#171310',hintC:'HOLD ON A REQUEST TO SERVE IT',hintK:'SPACE TO SERVE - ARROWS TO MOVE',over:'SHIFT ENDED'}
 };
 
 /* ---------- chrome CSS (injected once per page) ---------- */
@@ -123,6 +124,7 @@ const CSS='*{box-sizing:border-box;margin:0;padding:0}'
 +'body[data-theme="matrix"]{--bg:#000306;--ink:#49E36F;--accent:#C8FFD9;--dim:#1E5B33;--panel:rgba(73,227,111,.08)}'
 +'body[data-theme="cab"]{--bg:#0B0B12;--ink:#FFE8C9;--accent:#FFBD2E;--dim:#5A5470;--panel:rgba(255,189,46,.08)}'
 +'body[data-theme="deep"]{--bg:#04202F;--ink:#BFE8FF;--accent:#7FE8D6;--dim:#3A6B84;--panel:rgba(127,232,214,.08)}'
++'body[data-theme="clock"]{--bg:#171310;--ink:#F2E2C4;--accent:#E0A458;--dim:#6B5A48;--panel:rgba(224,164,88,.09)}'
 +'.hud{position:absolute;top:0;left:0;right:0;z-index:25;display:flex;align-items:center;gap:.55rem;padding:max(.7rem,env(safe-area-inset-top)) .9rem .4rem}'
 +'.hud .sp{flex:1}.chip{font-size:.62rem;letter-spacing:.08em;color:var(--dim);white-space:nowrap}'
 +'.chip b{color:var(--ink);font-weight:600;min-width:5ch;display:inline-block;text-align:right}'
@@ -1713,6 +1715,168 @@ Games.deep=(function(){
   };
   return g;
 })();
+
+/* ============================================================
+   GAME: clock — MINUTE HAND, hold-to-serve time management
+   ============================================================ */
+Games.clock=(function(){
+  const g={mode:'ready'};
+  const C={bg:'#171310',face:'#241C15',ink:'#F2E2C4',accent:'#E0A458',dim:'#6B5A48',bad:'#FF5F56',good:'#9BC49B'};
+  const KINDS=[{col:'#E0A458',ch:'M'},{col:'#7FB4D9',ch:'T'},{col:'#9BC49B',ch:'C'}];
+  let t=0,score=0,U=1,lives=3,combo=0;
+  let reqs=[],cursor={x:0,y:0},spawnT=1,pHeld=false,serveHeld=false,shake=0,texts=[];
+  const keys={};
+  function layout(){U=clamp(Math.min(H/560,W/470),.55,1.4);}
+  function ringT(){return Math.max(4.5,10-score/150);}
+  function spawnGap(){return Math.max(.7,1.5-score/400);}
+  function maxReq(){return Math.min(8,4+Math.floor(score/300));}
+  function spawn(ghost){
+    let x=0,y=0,ok=false;
+    for(let tries=0;tries<12&&!ok;tries++){
+      x=rand(80*U,W-80*U);y=rand(130*U,H-110*U);
+      ok=true;
+      for(const r of reqs)if(Math.hypot(r.x-x,r.y-y)<90*U){ok=false;break;}
+    }
+    const k=KINDS[irand(0,KINDS.length-1)];
+    reqs.push({x,y,ring:1,prog:0,kind:k,ghost:!!ghost});
+  }
+  function reset(){
+    g.mode='ready';score=0;lives=3;combo=0;reqs=[];texts=[];shake=0;spawnT=.6;
+    setScore(0);cursor.x=W/2;cursor.y=H*.6;
+    showHint(COARSE.matches?INFO.clock.hintC:INFO.clock.hintK);hideOver();
+  }
+  function start(){
+    if(g.mode!=='ready')return;
+    g.mode='playing';reqs=[];hideHint();hideOver();
+    AudioFX.tone(300,540,.2,'square',.3);
+  }
+  function die(){
+    g.mode='dead';deadAt=performance.now();AudioFX.die();hideHint();
+    const best=+LS.get(bestKey('clock'),0),nb=score>best,mx=Math.max(best,score);
+    if(nb)LS.set(bestKey('clock'),score);
+    setBest(mx);
+    setTimeout(()=>showOver(INFO.clock.over,score,mx,nb),500);
+  }
+  function addText(x,y,s,col){texts.push({x,y,s,col,t:0,life:.9});}
+  g.enter=()=>{layout();reset();};
+  g.start=start;
+  g.restart=()=>{reset();start();};
+  g.resize=()=>{layout();if(g.mode==='playing')reqs=[];};
+  g.key=k=>{
+    if(k==='ArrowLeft'||k==='a'||k==='A')keys.l=1;
+    else if(k==='ArrowRight'||k==='d'||k==='D')keys.r=1;
+    else if(k==='ArrowUp'||k==='w'||k==='W')keys.u=1;
+    else if(k==='ArrowDown'||k==='s'||k==='S')keys.d=1;
+    else if(k===' ')serveHeld=true;
+  };
+  g.release=k=>{
+    if(k==='ArrowLeft'||k==='a'||k==='A')keys.l=0;
+    else if(k==='ArrowRight'||k==='d'||k==='D')keys.r=0;
+    else if(k==='ArrowUp'||k==='w'||k==='W')keys.u=0;
+    else if(k==='ArrowDown'||k==='s'||k==='S')keys.d=0;
+    else if(k===' ')serveHeld=false;
+  };
+  g.pointer=(e,type)=>{
+    if(type==='down'){pHeld=true;cursor.x=e.clientX;cursor.y=e.clientY;}
+    else if(type==='move'){cursor.x=e.clientX;cursor.y=e.clientY;}
+    else pHeld=false;
+  };
+  g.update=dt=>{
+    t+=dt;shake=Math.max(0,shake-dt*26);
+    const sp=420*U*dt;
+    if(keys.l)cursor.x-=sp;
+    if(keys.r)cursor.x+=sp;
+    if(keys.u)cursor.y-=sp;
+    if(keys.d)cursor.y+=sp;
+    cursor.x=clamp(cursor.x,20,W-20);cursor.y=clamp(cursor.y,110,H-20);
+    if(g.mode==='playing'){
+      spawnT-=dt;
+      if(spawnT<=0&&reqs.length<maxReq()){spawn(false);spawnT=spawnGap()*rand(.8,1.2);}
+      const hold=pHeld||serveHeld;
+      for(let i=reqs.length-1;i>=0;i--){
+        const r=reqs[i];
+        const near=hold&&Math.hypot(cursor.x-r.x,cursor.y-r.y)<40*U;
+        if(near){
+          r.prog+=dt/1.1;
+          if(r.prog>=1){
+            combo++;const pts=10+combo*5;
+            score+=pts;setScore(score,true);AudioFX.pickup();
+            addText(r.x,r.y-30*U,'+'+pts+(combo>1?' x'+combo:''),C.accent);
+            reqs.splice(i,1);continue;
+          }
+        }else r.prog=Math.max(0,r.prog-dt*.4);
+        r.ring-=dt;
+        if(r.ring<=0){
+          reqs.splice(i,1);combo=0;lives--;
+          shake=8;AudioFX.tone(200,60,.3,'sawtooth',.45);
+          if(lives<=0){die();return;}
+        }
+      }
+    }else if(g.mode==='ready'){
+      if(reqs.length<3&&Math.random()<dt)spawn(true);
+      for(const r of reqs)r.prog=0;
+    }
+    for(const x of texts){x.t+=dt;x.y-=30*U*dt;}
+    texts=texts.filter(x=>x.t<x.life);
+  };
+  g.draw=gc=>{
+    gc.fillStyle=C.bg;gc.fillRect(0,0,W,H);
+    gc.save();
+    if(shake>0)gc.translate(rand(-shake,shake),rand(-shake,shake));
+    const fr=Math.min(W,H)*.62;
+    gc.strokeStyle=C.face;gc.lineWidth=10;
+    gc.beginPath();gc.arc(W/2,H*.56,fr,0,TAU);gc.stroke();
+    gc.lineWidth=2;
+    for(let i=0;i<12;i++){
+      const a=i/12*TAU;
+      gc.beginPath();
+      gc.moveTo(W/2+Math.cos(a)*fr*.92,H*.56+Math.sin(a)*fr*.92);
+      gc.lineTo(W/2+Math.cos(a)*fr,H*.56+Math.sin(a)*fr);
+      gc.stroke();
+    }
+    for(const r of reqs){
+      const rr=34*U,rem=clamp(r.ring/ringT(),0,1);
+      gc.globalAlpha=r.ghost?.35:1;
+      gc.fillStyle=C.face;
+      gc.beginPath();gc.arc(r.x,r.y,rr*.72,0,TAU);gc.fill();
+      gc.strokeStyle=r.ghost?C.dim:(rem<.3?C.bad:C.accent);
+      gc.lineWidth=4*U;
+      gc.beginPath();gc.arc(r.x,r.y,rr,-Math.PI/2,-Math.PI/2+TAU*rem);gc.stroke();
+      if(r.prog>0){
+        gc.strokeStyle=C.good;gc.lineWidth=3*U;
+        gc.beginPath();gc.arc(r.x,r.y,rr*.55,-Math.PI/2,-Math.PI/2+TAU*r.prog);gc.stroke();
+      }
+      gc.fillStyle=r.ghost?C.dim:r.kind.col;
+      gc.font='700 '+Math.round(14*U)+'px '+MONO;gc.textAlign='center';
+      gc.fillText(r.kind.ch,r.x,r.y+5*U);
+      gc.globalAlpha=1;
+    }
+    if(g.mode==='playing'||g.mode==='ready'){
+      const hold=pHeld||serveHeld;
+      gc.strokeStyle=hold?C.good:C.accent;gc.lineWidth=2;
+      gc.beginPath();gc.arc(cursor.x,cursor.y,12*U,0,TAU);gc.stroke();
+      gc.beginPath();gc.moveTo(cursor.x-20*U,cursor.y);gc.lineTo(cursor.x-8*U,cursor.y);
+      gc.moveTo(cursor.x+8*U,cursor.y);gc.lineTo(cursor.x+20*U,cursor.y);
+      gc.moveTo(cursor.x,cursor.y-20*U);gc.lineTo(cursor.x,cursor.y-8*U);
+      gc.moveTo(cursor.x,cursor.y+8*U);gc.lineTo(cursor.x,cursor.y+20*U);gc.stroke();
+    }
+    gc.font='700 '+Math.round(12*U)+'px '+MONO;gc.textAlign='left';
+    for(const x of texts){gc.globalAlpha=1-x.t/x.life;gc.fillStyle=x.col;gc.fillText(x.s,x.x,x.y);}
+    gc.globalAlpha=1;
+    for(let i=0;i<3;i++){
+      gc.beginPath();gc.arc(20+i*22,H-20,6,0,TAU);
+      if(i<lives){gc.fillStyle=C.accent;gc.fill();}else{gc.strokeStyle=C.bad;gc.stroke();}
+    }
+    if(g.mode==='playing'){
+      gc.fillStyle=C.dim;gc.font='600 '+Math.round(10*U)+'px '+MONO;gc.textAlign='right';
+      gc.fillText(combo>1?'COMBO x'+combo:'',W-14,H-16);
+    }
+    if(g.mode==='dead'){gc.fillStyle='rgba(23,19,16,.6)';gc.fillRect(0,0,W,H);}
+    gc.restore();
+  };
+  return g;
+})();
+
 
 return {mount:mount,Games:Games,INFO:INFO};
 })();

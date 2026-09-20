@@ -12,4 +12,9 @@ window.N404_GAMES=[{id:"dunes",type:"game",tags:["runner","reflex"],dir:"fox",nu
  short:"You versus the machine at the oldest game there is. Do not drop the packet.",
  long:"Two paddles, one amber CRT, and a ball that gains malice with every exchange. Angle your returns to wrong-foot the CPU, farm rally bonuses, and pray it never learns your spin. Three dropped packets and the connection resets.",
  feats:["Angle-spin off your paddle","Rally +10, CPU miss +50","CPU speeds up as you score"]}
+,
+{id:"clock",type:"game",tags:["timing","management"],dir:"clock",num:"13",title:"MINUTE HAND",tag:"TIME MANAGEMENT",
+ short:"The site is down and everyone wants you. Serve requests before their patience rings expire.",
+ long:"You are the lone admin of a dead website, and the world keeps knocking. Mail, tickets, calls arrive as clock-badges with a draining patience ring. Hold your cursor on one to serve it — chains of serves build combos. Let three rings empty and the shift is over.",
+ feats:["Hold-to-serve with combo chains","Patience rings shrink as you score","Pointer or keyboard control"]}
 ];

@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>WHITE RABBIT — 404STARTUP</title>
+<title>MINUTE HAND — 404STARTUP</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -49,14 +49,13 @@ ul.feats{margin:16px 0 26px;padding-left:20px;line-height:2;font-size:13px;opaci
 <b>404STARTUP</b><span class="sp"></span>
 <a class="lnk" href="../">&#8592; LIBRARY</a>
 </header>
-<div class="kick">// LIBRARY ENTRY 06</div>
-<h1>WHITE RABBIT</h1>
+<div class="kick">// LIBRARY ENTRY 13</div>
+<h1>MINUTE HAND</h1>
 <span class="tag" id="tag"></span>
 <div class="art" id="art"></div>
 <p class="desc" id="desc"></p>
 <ul class="feats" id="feats"></ul>
-<a class="btn" href="matrix.html">&#9654; PLAY WHITE RABBIT</a>
-<a class="btn ghost" style="margin-left:10px" href="rain.html">&#9707; OPEN THE WAITING PAGE</a>
+<a class="btn" href="clock.html">&#9654; PLAY MINUTE HAND</a>
 <a class="btn ghost" href="../" style="margin-left:10px">ALL GAMES</a>
 <p class="pn" id="pn"></p>
 </div>
@@ -64,7 +63,7 @@ ul.feats{margin:16px 0 26px;padding-left:20px;line-height:2;font-size:13px;opaci
 <script src="/assets/game-art.js"></script>
 <script>
 if(localStorage.getItem('n404_site_theme')==='orbit')document.body.classList.add('orbit');
-var id='matrix',g=N404_GAMES.find(function(x){return x.id===id});
+var id='clock',g=N404_GAMES.find(function(x){return x.id===id});
 document.getElementById('tag').textContent=g.tag;
 document.getElementById('desc').textContent=g.long;
 document.getElementById('feats').innerHTML=g.feats.map(function(f){return '<li>'+f+'</li>'}).join('');

@@ -112,6 +112,7 @@ vapor|vapor|SUNSET DRIFT|05
 matrix|matrix|WHITE RABBIT|06
 cab|cab|ARCADE CABINET|07
 deep|deep|ABYSS DRIFT|08
+clock|clock|MINUTE HAND|13
 PAIRS
 
 # ---- library index ----
