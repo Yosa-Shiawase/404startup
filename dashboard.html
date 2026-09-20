@@ -58,7 +58,7 @@ footer a{color:#C75B26}
  <svg viewBox="0 0 32 32" width="30"><polygon points="8,6 13,12 8,13" fill="#C75B26"/><polygon points="24,6 19,12 24,13" fill="#C75B26"/><polygon points="8,12 24,12 16,24" fill="#C75B26"/><polygon points="12,17 20,17 16,22" fill="#3A2A18"/></svg>
  <b>404STARTUP</b><span class="sp"></span>
  <a class="lnk" href="index.html">← HOME</a>
- <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+ <button id="sndChip" aria-label="Sound" style="background:none;border:1.5px solid #C75B26;color:#C75B26;border-radius:2px;padding:8px 12px;font-family:inherit;font-size:10.5px;letter-spacing:.12em;cursor:pointer;margin-left:8px">SND</button><button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </header>
 <div class="kick">// MISSION CONTROL</div>
 <h1>DASHBOARD</h1>
@@ -68,7 +68,7 @@ footer a{color:#C75B26}
 <div class="scores" id="scores"></div>
 <p class="lead" style="margin-top:24px;font-size:12px">Note: the offline <b>404 arcade</b> keeps its own classic 3-world switcher (dunes · orbit · terminal) — that's the page your visitors see when their internet dies. The library pages above are single-game, no switcher, by design.</p>
 <footer>
- <a href="library/index.html">library</a> · <a href="/404.html">arcade</a> ·
+ <a href="library/index.html">library</a> · <a href="/404.html">arcade</a> · <a href="/qatest.html">qa</a> ·
  <a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">@yosashiawase</a>
  <button id="themeToggle" onclick="toggleTheme()"></button>
 </footer>
@@ -98,5 +98,14 @@ function toggleTheme(){if(localStorage.getItem('n404_orbit')!=='1')return;
  localStorage.setItem('n404_site_theme',document.body.classList.contains('orbit')?'sand':'orbit');applySiteTheme();}
 if(localStorage.getItem('n404_orbit')==='1'){
  document.getElementById('themeToggle').style.display='inline-block';applySiteTheme();}
+</script>
+<script id="sndChipJs">
+(function(){
+function on(){return localStorage.getItem("n404_mute")!=="1"&&localStorage.getItem("nf404_mute")!=="1";}
+function paint(){var b=document.getElementById("sndChip");if(!b)return;
+b.textContent="SND "+(on()?"●":"○");}
+var b=document.getElementById("sndChip");
+if(b){b.addEventListener("click",function(){var v=on()?"1":"0";localStorage.setItem("n404_mute",v);localStorage.setItem("nf404_mute",v);paint();});paint();}
+})();
 </script>
 </body></html>

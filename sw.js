@@ -1,5 +1,5 @@
-const C='n404-v22';
-const PRECACHE=['/','/index.html','/dashboard.html','/about.html','about.html','/404.html',
+const C='n404-v23';
+const PRECACHE=['/','/index.html','/dashboard.html','/qatest.html','/manifest.json','/assets/icon-192.png','/assets/icon-512.png','/about.html','about.html','/404.html',
 '/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg','/assets/nav.js',
 '/library/index.html',
 '/library/fox/fox.html','/library/fox/fox_page.html',

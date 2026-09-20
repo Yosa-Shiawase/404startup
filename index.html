@@ -4,6 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>404STARTUP — the internet died. play anyway.</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--sand:#F2E2C4;--ink:#2B1F12;--fox:#C75B26;--fox2:#F2A65A;--dim:#8A7A5E;--dark:#141019;--paper:#fff;
@@ -221,7 +222,7 @@ body.orbit #foxCount{background:#FFB454;color:#0A0E1B}
  <nav class="nav">
   <a href="library/index.html">LIBRARY</a><a href="dashboard.html">DASHBOARD</a><a href="work/index.html">WORK</a>
   <a href="index.html#get">HOW</a><a href="about.html">ABOUT</a>
-  <a href="/404.html" id="playPill">PLAY ▸</a>
+  <button id="sndChip" aria-label="Sound" style="background:none;border:2px solid currentColor;border-radius:999px;padding:8px 12px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;cursor:pointer;color:inherit">SND</button><a href="/404.html" id="playPill">PLAY ▸</a>
  </nav>
  <button id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
 </div></header>
@@ -559,5 +560,14 @@ if('serviceWorker' in navigator){
 <script id="foxConsole">
 console.log("%c\u{1F98A} 404STARTUP","font-size:22px;font-weight:bold");
 console.log("%cBuilt by Yosa-Shiawase - custom 404s: instagram.com/yosashiawase","color:#C75B26");
+</script>
+<script id="sndChipJs">
+(function(){
+function on(){return localStorage.getItem("n404_mute")!=="1"&&localStorage.getItem("nf404_mute")!=="1";}
+function paint(){var b=document.getElementById("sndChip");if(!b)return;
+b.textContent="SND "+(on()?"●":"○");}
+var b=document.getElementById("sndChip");
+if(b){b.addEventListener("click",function(){var v=on()?"1":"0";localStorage.setItem("n404_mute",v);localStorage.setItem("nf404_mute",v);paint();});paint();}
+})();
 </script>
 </body></html>

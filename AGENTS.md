@@ -49,3 +49,9 @@ about.html is the About page (bio + GitHub/LinkedIn/Instagram). All navs must
 include ABOUT -> about.html: nav.js ITEMS, home fullscreen menu, home desktop
 nav, dashboard menu. The home burger is visible at ALL widths (desktop nav and
 burger coexist).
+
+## QoL layer (v10)
+qatest.html internal QA console (noindex). RANDOM dice on library index AND build_library.sh LIB heredoc (keep synced). PWA manifest.json + icon PNGs; manifest link on index.html and 404.html (additive only, rule 2). Sound chip sndChip on index+dashboard toggles BOTH n404_mute and nf404_mute. 404.html untouched.
+
+## Engine pipeline (v11)
+assets/src/n404-core.src.js is the READABLE engine source (chunk-assembled, API-gate 8/8 green). Never edit assets/n404-core.js directly; edit .src.js then: terser assets/src/n404-core.src.js -c -m -o assets/n404-core.js (banner survives). Contract frozen: window.N404={mount,Games,INFO}; ids dunes,orbit,terminal,sonar,vapor,matrix,cab,deep; keys n404_best_<id>, n404_mute. New mount games extend .src.js + theme CSS and pass the API gate. Harness note: node gate sandbox needs bare matchMedia/requestAnimationFrame globals. Self-contained games (stack,dial,echo,pong) unaffected.
