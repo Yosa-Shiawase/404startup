@@ -1,4 +1,4 @@
-const C='n404-v24';
+const C='n404-v25';
 const PRECACHE=['/','/index.html','/dashboard.html','/qatest.html','/manifest.json','/assets/icon-192.png','/assets/icon-512.png','/about.html','about.html','/404.html',
 '/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg','/assets/nav.js',
 '/library/index.html',
@@ -20,6 +20,12 @@ self.addEventListener('activate',e=>e.waitUntil(
   caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',e=>{
   const u=new URL(e.request.url);
+  if(e.request.method==='GET'&&u.origin===location.origin&&
+     (u.pathname==='/assets/library-manifest.js'||u.pathname==='/assets/game-art.js')){
+    e.respondWith(fetch(e.request).then(res=>{
+      if(res&&res.ok){const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp)).catch(()=>{});}
+      return res;
+    }).catch(()=>caches.match(e.request)));return;}
   if(e.request.method==='GET'&&u.origin===location.origin&&u.pathname.startsWith('/assets/')){
     e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));return;}
   if(e.request.mode!=='navigate')return;
