@@ -13,3 +13,13 @@ measure.lw/lh or lastW/lastH at the top) and MUST NOT reset gameplay state
 (paddle positions, target bands, sequences, cameras) on watchdog ticks.
 Gameplay state may only re-center/reset on a genuine viewport size change,
 or on explicit ready/restart. All library/*/ canvas games follow this rule.
+
+## Shared nav (v6)
+assets/nav.js injects burger + fullscreen menu on SECTION pages (library index,
+work index, case pages, library/*/*_page.html). Include with
+<script src="/assets/nav.js"></script> immediately before </body>.
+Do NOT include it in index.html or dashboard.html (they manage their own nav)
+and do NOT include it in library/<dir>/<dir>.html play pages or 404.html
+(minimal HUD / offline fallback is intentional). nav.js is idempotent
+(n4menu id guard), highlights the active page, applies the orbit theme, and
+provides a window.toggleTheme fallback for footer toggles.

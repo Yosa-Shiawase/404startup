@@ -1,6 +1,6 @@
-const C='n404-v15';
+const C='n404-v16';
 const PRECACHE=['/','/index.html','/dashboard.html','/404.html',
-'/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg',
+'/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg','/assets/nav.js',
 '/library/index.html',
 '/library/fox/fox.html','/library/fox/fox_page.html',
 '/library/orbit/orbit.html','/library/orbit/orbit_page.html',
