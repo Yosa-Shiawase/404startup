@@ -71,19 +71,22 @@ function tone(f0,f1,dur,type,vol){try{
  g.gain.setValueAtTime(.0001,T);g.gain.exponentialRampToValueAtTime(vol||.3,T+.012);
  g.gain.exponentialRampToValueAtTime(.0001,T+dur);
  o.connect(g);g.connect(AC.destination);o.start(T);o.stop(T+dur+.05);}catch(e){}}
+var lastW=0,lastH=0;
 function measure(){
  var vv=window.visualViewport,de=document.documentElement;
- W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
- H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
- W=Math.max(200,Math.round(W));H=Math.max(240,Math.round(H));
+ var nw=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
+ var nh=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
+ nw=Math.max(200,Math.round(nw));nh=Math.max(240,Math.round(nh));
+ if(nw===lastW&&nh===lastH)return;
+ var ratio=lastW?band.w/Math.max(track.w,1):.34;
+ lastW=nw;lastH=nh;W=nw;H=nh;
  var D=Math.min(devicePixelRatio||1,2);
  cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
  x.setTransform(D,0,0,D,0,0);
  U=Math.max(.55,Math.min(H/560,W/470,1.4));
  track.w=Math.min(W*.8,380*U);track.x=(W-track.w)/2;track.y=Math.round(H*.46);
- if(mode==='ready')needle=track.x;
- band.w=track.w*.34;
- band.x=track.x+track.w*.33;
+ if(mode==='ready'){needle=track.x;band.w=track.w*.34;band.x=track.x+track.w*.33;}
+ else{band.w=Math.max(track.w*.10,track.w*ratio);newBand();}
 }
 addEventListener('resize',measure);
 if(window.visualViewport)visualViewport.addEventListener('resize',measure);

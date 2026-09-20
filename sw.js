@@ -1,4 +1,4 @@
-const C='n404-v14';
+const C='n404-v15';
 const PRECACHE=['/','/index.html','/dashboard.html','/404.html',
 '/assets/n404-core.js','/assets/game-art.js','/assets/library-manifest.js','/assets/favicon.svg',
 '/library/index.html',
@@ -13,7 +13,8 @@ const PRECACHE=['/','/index.html','/dashboard.html','/404.html',
 '/library/stack/stack.html','/library/stack/stack_page.html',
 '/library/dial/dial.html','/library/dial/dial_page.html',
 '/library/echo/echo.html','/library/echo/echo_page.html',
-'/library/pong/pong.html','/library/pong/pong_page.html'];
+'/library/pong/pong.html','/library/pong/pong_page.html',
+'/work/index.html','/work/nirakshan/nirakshan.html'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(PRECACHE)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>e.waitUntil(
   caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

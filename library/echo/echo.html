@@ -82,6 +82,9 @@ function measure(){
  W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
  H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
  W=Math.max(200,Math.round(W));H=Math.max(240,Math.round(H));
+
+ if(measure.lw===W&&measure.lh===H)return;
+ measure.lw=W;measure.lh=H;
  var D=Math.min(devicePixelRatio||1,2);
  cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
  x.setTransform(D,0,0,D,0,0);

@@ -72,6 +72,9 @@ function measure(){
  W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
  H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
  W=Math.max(200,Math.round(W));H=Math.max(240,Math.round(H));
+
+ if(measure.lw===W&&measure.lh===H)return;
+ measure.lw=W;measure.lh=H;
  var D=Math.min(devicePixelRatio||1,2);
  cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
  x.setTransform(D,0,0,D,0,0);
@@ -163,7 +166,7 @@ function loop(now){
   if(cur.x>W+half){cur.x=W+half;cur.dir=-1;}
   if(cur.x<-half){cur.x=-half;cur.dir=1;}
  }
- var ty=Math.max(0,(baseY-(layers.length-1)*BH)-H*.5);
+ var ty=Math.max(0,(layers.length-1)*BH-(baseY-H*.45));
  camY+=(ty-camY)*Math.min(1,dt*4);
  for(var i=shards.length-1;i>=0;i--){var s=shards[i];
   s.vy+=1400*U*dt;s.y+=s.vy*dt;s.rot+=s.vr*dt;

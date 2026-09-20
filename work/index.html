@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Custom Builds — 404STARTUP</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F2E2C4;color:#2B1F12;
+ -webkit-tap-highlight-color:transparent;transition:background-color .8s,color .8s;min-height:100vh;overflow-x:hidden}
+body.orbit{background:#0A0E1B;color:#E9EDF6}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,44px) 70px}
+header{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:2px solid currentColor}
+header b{letter-spacing:.22em;font-size:12px}
+header .sp{flex:1}
+.lnk{font-size:10.5px;letter-spacing:.12em;color:#C75B26;text-decoration:none;border:1.5px solid #C75B26;padding:8px 12px}
+h1{font-size:clamp(26px,4.5vw,44px);margin:34px 0 6px}
+.kick{font-size:10px;letter-spacing:.34em;color:#C75B26;margin-bottom:8px}
+.lead{opacity:.75;font-size:14px;line-height:1.75;max-width:58ch}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(14px,2vw,22px);margin-top:28px}
+.card{background:#fff;border:2px solid currentColor;border-radius:8px;text-decoration:none;color:inherit;
+ display:block;overflow:hidden;position:relative;transition:transform .25s,box-shadow .25s}
+.card:hover{transform:translateY(-7px) rotate(-.6deg);box-shadow:10px 10px 0 #C75B26}
+body.orbit .card{background:#121A33;border-color:#2A3458}
+.badge{position:absolute;top:10px;right:10px;font-size:8.5px;letter-spacing:.18em;background:#1F3A5F;
+ color:#fff;padding:4px 9px;border-radius:3px;z-index:2}
+.card h3{font-size:15px;letter-spacing:.12em;margin:12px 16px 6px}
+.card p{font-size:12.5px;line-height:1.6;opacity:.7;margin:0 16px 12px}
+.card .go{display:inline-block;margin:0 16px 16px;font-size:11.5px;color:#C75B26}
+.art{line-height:0;border-bottom:2px solid currentColor}
+.art svg{width:100%;height:auto;display:block}
+.art [class^="a-"]{animation-play-state:paused;transform-box:view-box}
+.card:hover .art [class^="a-"]{animation-play-state:running}
+@media(pointer:coarse){.art [class^="a-"]{animation-play-state:running}}
+.a-spin{animation:kSpin 6s linear infinite}
+.a-ping{animation:kPing 1.8s ease-in-out infinite}
+@keyframes kSpin{to{transform:rotate(360deg)}}
+@keyframes kPing{0%,100%{opacity:.3}50%{opacity:1}}
+.cta{margin:40px auto 0;text-align:center;padding:26px 20px;border:3px dashed #C75B26;border-radius:8px;max-width:760px}
+.cta b{font-size:clamp(16px,2.2vw,22px)}
+.cta p{font-size:13px;opacity:.7;margin:8px 0 16px;line-height:1.7}
+.btn{display:inline-block;background:#C75B26;color:#fff;text-decoration:none;font-size:12.5px;
+ letter-spacing:.15em;padding:12px 24px;border-radius:4px}
+footer{border-top:2px solid currentColor;margin-top:50px;padding:22px 0;text-align:center;font-size:11px;opacity:.75;line-height:2.1}
+footer a{color:#C75B26}
+#themeToggle{background:none;border:1px dashed #C75B26;color:#C75B26;font-family:inherit;font-size:10px;letter-spacing:.15em;padding:6px 13px;border-radius:3px;cursor:pointer;margin-left:8px}
+</style></head><body>
+<div class="wrap">
+<header>
+<svg viewBox="0 0 32 32" width="30"><polygon points="8,6 13,12 8,13" fill="#C75B26"/><polygon points="24,6 19,12 24,13" fill="#C75B26"/><polygon points="8,12 24,12 16,24" fill="#C75B26"/><polygon points="12,17 20,17 16,22" fill="#3A2A18"/></svg>
+<b>404STARTUP</b><span class="sp"></span>
+<a class="lnk" href="index.html">&#8592; HOME</a>
+<a class="lnk" href="/library/index.html">LIBRARY</a>
+</header>
+<div class="kick">// CUSTOM BUILDS</div>
+<h1>THE WORK</h1>
+<p class="lead">Bespoke playable 404 pages, built per client: their mascot, their palette, their world — one file, fully offline, theirs forever. Hover a card to see it move.</p>
+<div class="cards" id="cards"></div>
+<div class="cta">
+<b>Your build could be next.</b>
+<p>Slots open monthly — DM "404" on Instagram with your brand and we'll sketch a world for it.</p>
+<a class="btn" href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">DM @YOSASHIAWASE →</a>
+</div>
+</div>
+<footer>
+<a href="index.html">home</a> · <a href="/library/index.html">library</a> · <a href="dashboard.html">dashboard</a> ·
+<a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">@yosashiawase</a>
+<button id="themeToggle" onclick="toggleTheme()"></button>
+</footer>
+<script>
+if(localStorage.getItem('n404_site_theme')==='orbit')document.body.classList.add('orbit');
+function applySiteTheme(){var on=localStorage.getItem('n404_site_theme')==='orbit';
+ document.body.classList.toggle('orbit',on);
+ var t=document.getElementById('themeToggle');if(t)t.textContent=on?'THEME: ORBIT ●':'THEME: SAND ●';}
+function toggleTheme(){if(localStorage.getItem('n404_orbit')!=='1')return;
+ localStorage.setItem('n404_site_theme',document.body.classList.contains('orbit')?'sand':'orbit');applySiteTheme();}
+if(localStorage.getItem('n404_orbit')==='1'){
+ document.getElementById('themeToggle').style.display='inline-block';applySiteTheme();}
+function hero(){return '<svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice">'+
+ '<rect width="400" height="240" fill="#F7FAFC"/>'+
+ '<polygon points="200,14 330,88 330,196 200,232 70,196 70,88" fill="#EDF3F8" stroke="#E2E9EF" stroke-width="2"/>'+
+ '<g stroke="#C9D4DD" fill="none"><circle cx="200" cy="130" r="44"/><circle cx="200" cy="130" r="72" stroke-dasharray="4 7"/></g>'+
+ '<g class="a-spin" style="transform-origin:200px 130px"><path d="M200 130 L200 58 A72 72 0 0 1 240 68 Z" fill="rgba(46,109,164,.18)"/><line x1="200" y1="130" x2="200" y2="58" stroke="#2E6DA4" stroke-width="2.5"/></g>'+
+ '<g class="a-ping" fill="#D99000" stroke="#fff" stroke-width="2"><circle cx="262" cy="112" r="5"/></g>'+
+ '<g class="a-ping" style="animation-delay:.6s" fill="#0E8A5F" stroke="#fff" stroke-width="2"><circle cx="156" cy="164" r="5"/></g>'+
+ '<circle cx="200" cy="130" r="20" fill="#1F3A5F"/><circle cx="206" cy="124" r="7" fill="#0E8A5F"/><circle cx="209" cy="121" r="2.6" fill="#fff"/>'+
+ '<text x="24" y="40" font-family="monospace" font-size="13" letter-spacing="4" fill="#1F3A5F">NIRAKSHAN</text>'+
+ '<text x="24" y="218" font-family="monospace" font-size="10" letter-spacing="3" fill="#D99000">SEE · PREDICT · INTERCEPT</text></svg>';}
+document.getElementById('cards').innerHTML=
+ '<a class="card" href="nirakshan/nirakshan.html"><span class="badge">CASE 01 · 2026</span>'+
+ '<div class="art">'+hero()+'</div><h3>NIRAKSHAN</h3>'+
+ '<p>Fraud-radar 404 for a SIH 2026 build — sweep, blips and the all-seeing eye, in their palette. Open source on GitHub.</p>'+
+ '<span class="go">READ THE CASE →</span></a>';
+</script>
+</body></html>
