@@ -1727,7 +1727,7 @@ Games.clock=(function(){
   let reqs=[],cursor={x:0,y:0},spawnT=1,pHeld=false,serveHeld=false,shake=0,texts=[];
   const keys={};
   function layout(){U=clamp(Math.min(H/560,W/470),.55,1.4);}
-  function ringT(){return Math.max(4.5,10-score/150);}
+  function ringT(){return Math.max(5,9-score/120);}
   function spawnGap(){return Math.max(.7,1.5-score/400);}
   function maxReq(){return Math.min(8,4+Math.floor(score/300));}
   function spawn(ghost){
@@ -1795,17 +1795,17 @@ Games.clock=(function(){
       const hold=pHeld||serveHeld;
       for(let i=reqs.length-1;i>=0;i--){
         const r=reqs[i];
-        const near=hold&&Math.hypot(cursor.x-r.x,cursor.y-r.y)<40*U;
+        const near=hold&&Math.hypot(cursor.x-r.x,cursor.y-r.y)<56*U;
         if(near){
-          r.prog+=dt/1.1;
+          r.prog+=dt/0.9;
           if(r.prog>=1){
             combo++;const pts=10+combo*5;
             score+=pts;setScore(score,true);AudioFX.pickup();
             addText(r.x,r.y-30*U,'+'+pts+(combo>1?' x'+combo:''),C.accent);
             reqs.splice(i,1);continue;
           }
-        }else r.prog=Math.max(0,r.prog-dt*.4);
-        r.ring-=dt;
+        }else r.prog=Math.max(0,r.prog-dt*.25);
+        r.ring-=dt/ringT();
         if(r.ring<=0){
           reqs.splice(i,1);combo=0;lives--;
           shake=8;AudioFX.tone(200,60,.3,'sawtooth',.45);
@@ -1835,7 +1835,7 @@ Games.clock=(function(){
       gc.stroke();
     }
     for(const r of reqs){
-      const rr=34*U,rem=clamp(r.ring/ringT(),0,1);
+      const rr=34*U,rem=clamp(r.ring,0,1);
       gc.globalAlpha=r.ghost?.35:1;
       gc.fillStyle=C.face;
       gc.beginPath();gc.arc(r.x,r.y,rr*.72,0,TAU);gc.fill();
