@@ -23,3 +23,10 @@ and do NOT include it in library/<dir>/<dir>.html play pages or 404.html
 (minimal HUD / offline fallback is intentional). nav.js is idempotent
 (n4menu id guard), highlights the active page, applies the orbit theme, and
 provides a window.toggleTheme fallback for footer toggles.
+
+## Waiting rooms (v7 update)
+Ambient waiting pages now: library/matrix/rain.html, library/sonar/idle.html,
+library/vapor/radio.html. Each: self-contained, no score, back link to its
+game dir, tap interaction only, measure() guard per rule v5, precached in sw.
+Their buttons are injected into the matching *_page.html by the build_library.sh
+post-pass (matrix, sonar, vapor).

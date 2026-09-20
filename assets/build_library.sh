@@ -213,5 +213,6 @@ def patch(path,btn):
 amb='<a class="btn ghost" style="margin-left:10px" href="{f}">&#9707; {l} WAITING PAGE</a>'
 patch('library/matrix/matrix_page.html',amb.format(f='rain.html',l='OPEN THE'))
 patch('library/sonar/sonar_page.html',amb.format(f='idle.html',l='OPEN THE'))
+patch('library/vapor/vapor_page.html',amb.format(f='radio.html',l='OPEN THE'))
 print('ambient buttons injected')
 PP_EOF
