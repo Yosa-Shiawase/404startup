@@ -62,3 +62,15 @@ Every push to main auto-deploys.
 - Mobile check: layout must survive 360px width; no horizontal scroll.
 - Offline check: hard-refresh online once, then airplane mode, then reload a
   library game page — it must fully work from cache.
+
+## Exceptions & pipeline notes (v2)
+- library/stack/ is SELF-CONTAINED (same pattern as 404.html): stack.html has
+  its own inline engine, HUD and audio. Do NOT add "stack" to the PAIRS list in
+  assets/build_library.sh and do NOT let the script regenerate it — it would
+  overwrite it with a mount-template page referencing a non-existent core game.
+  stack_page.html is also hand-maintained.
+- assets/build_library.sh no longer rewrites sw.js; it only bumps the cache
+  version. Update the PRECACHE list by hand whenever files are added/removed.
+- New games may follow either pattern: MOUNT (core game in n404-core.js +
+  PAIRS line + script regen) or SELF-CONTAINED (own html; manifest + art
+  entries only; NO PAIRS line; hand-authored files).

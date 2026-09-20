@@ -186,25 +186,18 @@ document.getElementById('cards').innerHTML=N404_GAMES.map(function(g){
 </body></html>
 LIB_EOF
 
-# ---- fresh sw.js with every page precached ----
-LIST='"/","/index.html","/404.html","/assets/n404-core.js","/assets/game-art.js","/assets/library-manifest.js","/assets/favicon.svg","/library/index.html"'
-for d in fox orbit snake sonar vapor matrix cab deep; do
-  LIST="$LIST,\"/library/$d/$d.html\",\"/library/$d/${d}_page.html\""
-done
-cat > sw.js << SW_EOF
-const C='n404-v5';
-const PRECACHE=[$LIST];
-self.addEventListener('install',e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(PRECACHE)).then(()=>self.skipWaiting()))});
-self.addEventListener('activate',e=>e.waitUntil(
-  caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{
-  if(e.request.mode!=='navigate')return;
-  e.respondWith(fetch(e.request).then(res=>{
-    if(res&&res.ok){const cp=res.clone();caches.open(C).then(c=>c.put(e.request,cp)).catch(()=>{});}
-    return res;
-  }).catch(()=>caches.match(e.request).then(r=>r||caches.match('/404.html'))));});
-SW_EOF
-echo ">> sw.js regenerated (n404-v5)"
+# ---- bump sw cache version (PRECACHE is maintained by hand) ----
+python - << 'BUMP'
+import io
+s=io.open('sw.js',encoding='utf-8').read()
+i=s.find("n404-v")
+old=s[i+6:].split("'")[0]
+n=int(old)+1
+s=s[:i+6]+str(n)+s[i+6+len(old):]
+io.open('sw.js','w',encoding='utf-8').write(s)
+print('sw cache -> n404-v'+str(n))
+BUMP
+echo ">> sw.js version bumped (update PRECACHE by hand when files change)"
 echo ">> done."
 
 # ---- v2 post-pass: inject "waiting page" buttons + final sw.js ----
