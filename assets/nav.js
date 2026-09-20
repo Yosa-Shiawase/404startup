@@ -5,16 +5,16 @@ if(document.getElementById('n4menu'))return;
 var ITEMS=[
  {m:'/',l:'HOME'},
  {m:'/library/',l:'LIBRARY'},
- {m:'dashboard.html',l:'DASHBOARD'},
+ {m:'/dashboard.html',l:'DASHBOARD'},
  {m:'/work/',l:'THE WORK'},
- {m:'about.html',l:'ABOUT'},{m:'/404.html',l:'PLAY THE ARCADE →'}
+ {m:'/about.html',l:'ABOUT'},{m:'/404.html',l:'PLAY THE ARCADE →'}
 ];
 function isActive(m){
  var p=location.pathname;
  if(m==='/')return p==='/'||(p.indexOf('/index.html')>-1&&p.indexOf('/library/')<0&&p.indexOf('/work/')<0);
  return p.indexOf(m)>-1;
 }
-function hrefFor(m){return m==='/'?'index.html':m;}
+function hrefFor(m){return m==='/'?'/index.html':m;}
 var CSS=''
 +'.n4-scrim{position:fixed;inset:0;z-index:64;background:rgba(10,8,14,.55);opacity:0;pointer-events:none;transition:opacity .3s}'
 +'.n4-scrim.open{opacity:1;pointer-events:auto}'
