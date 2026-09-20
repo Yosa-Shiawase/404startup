@@ -38,7 +38,73 @@ body.orbit .soc a{border-color:#2A3458;background:#121A33}
 footer{border-top:2px solid currentColor;margin-top:50px;padding:22px 0;text-align:center;font-size:11px;opacity:.75;line-height:2.1}
 footer a{color:#C75B26}
 #themeToggle{background:none;border:1px dashed #C75B26;color:#C75B26;font-family:inherit;font-size:10px;letter-spacing:.15em;padding:6px 13px;border-radius:3px;cursor:pointer;margin-left:8px}
+</style>
+<style>
+#pawCv{position:fixed;top:0;left:0;z-index:0;pointer-events:none;opacity:.5}
+header,.wrap>*,footer{position:relative;z-index:1}
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 </style></head><body>
+<canvas id="pawCv" aria-hidden="true"></canvas>
+<script>
+
+(function(){
+var cv=document.getElementById('pawCv'),x=cv.getContext('2d');
+var W=0,H=0,D=1,fox=null,fx=0,fdir=1,foot=0,t=0,prints=[];
+function size(){
+ if(size.lw===innerWidth&&size.lh===innerHeight)return;
+ size.lw=innerWidth;size.lh=innerHeight;
+ W=innerWidth;H=innerHeight;
+ D=Math.min(devicePixelRatio||1,2);
+ cv.width=W*D;cv.height=H*D;
+ cv.style.width=W+'px';cv.style.height=H+'px';
+ x.setTransform(D,0,0,D,0,0);
+}
+addEventListener('resize',size);size();setInterval(size,600);
+var FB=["..........#..#..","..........##.##.","..........#####.","##........######",".##......#######","..#.....########","..###########...","...#########...."];
+var FA=FB.concat(["...##...##..##..","...#....##...#..","..##....#...##.."]);
+var FBb=FB.concat(["....##..##..##..","...##...#...#...","..#.....##..#..."]);
+function mat(spr,cx,fy,c,col,flip){
+ x.save();x.translate(Math.round(cx),0);if(flip)x.scale(-1,1);
+ x.fillStyle=col;var x0=-8*c;
+ for(var r=0;r<spr.length;r++)for(var q=0;q<spr[r].length;q++)
+  if(spr[r][q]==='#')x.fillRect(Math.round(x0+q*c),Math.round(fy-(spr.length-r)*c),Math.ceil(c),Math.ceil(c));
+ x.restore();}
+var last=performance.now(),raf=null;
+function loop(now){
+ raf=requestAnimationFrame(loop);
+ var dt=Math.min((now-last)/1000,.05);last=now;t+=dt;
+ size();
+ x.clearRect(0,0,W,H);
+ if(!fox){
+  var orbit=document.body.classList.contains('orbit');
+  fox={col:orbit?'#E9EDF6':'#3A2A18',acc:orbit?'#F2A65A':'#C75B26'};
+  fx=-30;fdir=1;foot=0;
+ }
+ var speed=26;
+ fx+=fdir*speed*dt;foot+=speed*dt;
+ if(fdir===1&&fx>W+40){fdir=-1;}
+ if(fdir===-1&&fx<-40){for(var i=prints.length-1;i>=0;i--)prints.splice(i,1);}
+ if(foot>16){foot=0;
+  prints.push({x:fx-fdir*10,y:H-26,o:1,dir:fdir});}
+ for(var i=prints.length-1;i>=0;i--){var p=prints[i];
+  p.o-=dt*.06;if(p.o<=0){prints.splice(i,1);continue;}
+  x.globalAlpha=p.o*.5;x.fillStyle=fox.col;
+  x.fillRect(p.x-2,p.y,4,3);x.fillRect(p.x-2+(p.dir>0?-5:5),p.y+3,3,2);
+  x.globalAlpha=1;}
+ var orbit2=document.body.classList.contains('orbit');
+ mat((Math.floor(t*5)%2)?FBb:FA,fx,H-6,2.2,orbit2?'#E9EDF6':'#3A2A18',fdir<0);
+ x.fillStyle=fox.acc;
+ var sh=Math.sin(t*6)*.8;
+ x.fillRect(Math.round(fx-7+sh),Math.round(H-6-(11-3)*2.2),2,2);
+}
+document.addEventListener('visibilitychange',function(){
+ if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null;}
+ else if(!raf){last=performance.now();raf=requestAnimationFrame(loop);}});
+raf=requestAnimationFrame(function(t0){last=t0;raf=requestAnimationFrame(loop);});
+})();
+</script>
 <div class="wrap">
 <header>
 <svg viewBox="0 0 32 32" width="30"><polygon points="8,6 13,12 8,13" fill="#C75B26"/><polygon points="24,6 19,12 24,13" fill="#C75B26"/><polygon points="8,12 24,12 16,24" fill="#C75B26"/><polygon points="12,17 20,17 16,22" fill="#3A2A18"/></svg>
@@ -48,25 +114,25 @@ footer a{color:#C75B26}
 <div class="kick">// WHO'S BEHIND THE FOX</div>
 <h1>YOSA-SHIAWASE</h1>
 <span class="tag">BUILDER OF PLAYABLE 404 PAGES</span>
-<div class="story">
+<div class="story rv">
 <p>Every website has one page everyone visits and nobody remembers: the 404. The most common error on the web is also the most boring page ever shipped &#8212; a dead end, a shrug, a dinosaur at best.</p>
 <p>I started <b>404STARTUP</b> to fix that. The idea is simple: <b>the internet dies, your 404 page shouldn't.</b> Every world here is a fully playable, fully offline error page &#8212; hand-drawn canvas, synthesized sound, zero dependencies, one file. When a visitor's connection drops, instead of a dead end they find a desert, a radar console, a code stream, a high score.</p>
 <p>The library is free for anyone to drop into their site. For brands and projects I build <b>custom worlds</b> &#8212; your mascot, your palette, your 404 &#8212; like the NIRAKSHAN fraud-radar console in the work section.</p>
 <p>Twelve worlds are live. The shelf keeps growing.</p>
 </div>
-<h2><span>FIND ME</span>The rest of the trail</h2>
-<div class="soc">
+<h2 class="rv d1"><span>FIND ME</span>The rest of the trail</h2>
+<div class="soc rv d2">
 <a href="https://github.com/Yosa-Shiawase" target="_blank" rel="noopener">
 <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
 <div><div class="n">GITHUB &#8212; @YOSA-SHIAWASE</div><div class="d">All the code, including this site and every game</div></div></a>
-<a href="https://www.linkedin.com/yosa-shiawase" target="_blank" rel="noopener">
+<a href="https://www.linkedin.com/in/yosa-shiawase" target="_blank" rel="noopener">
 <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V8h4v2a6 6 0 0 1 2-2z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
 <div><div class="n">LINKEDIN &#8212; YOSA-SHIAWASE</div><div class="d">The professional side &#8212; projects and progress</div></div></a>
 <a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">
 <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
 <div><div class="n">INSTAGRAM &#8212; @YOSASHIAWASE</div><div class="d">Build logs, demos, and where custom orders happen</div></div></a>
 </div>
-<div class="cta">
+<div class="cta rv d3">
 <b>Want your own world?</b>
 <p>Custom 404 builds open monthly &#8212; your mascot, your palette, one file, offline forever.</p>
 <a class="btn" href="work/index.html">SEE THE WORK &#8594;</a>
@@ -76,9 +142,14 @@ footer a{color:#C75B26}
 <footer>
 <a href="index.html">home</a> &#183; <a href="library/index.html">library</a> &#183; <a href="work/index.html">the work</a> &#183;
 <a href="https://github.com/Yosa-Shiawase" target="_blank" rel="noopener">github</a> &#183;
-<a href="https://www.linkedin.com/yosa-shiawase" target="_blank" rel="noopener">linkedin</a> &#183;
+<a href="https://www.linkedin.com/in/yosa-shiawase" target="_blank" rel="noopener">linkedin</a> &#183;
 <a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">instagram</a>
 <button id="themeToggle" onclick="toggleTheme()"></button>
 </footer>
 <script src="/assets/nav.js"></script>
+<script>
+var io=new IntersectionObserver(function(es){es.forEach(function(e){
+ if(e.isIntersecting)e.target.classList.add('in');});},{threshold:.12});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+</script>
 </body></html>
