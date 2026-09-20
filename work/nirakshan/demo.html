@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cobalt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#040813">
+<title>NIRAKSHAN - Signal Lost (404) - Live Demo</title>
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="%23040813"/><circle cx="16" cy="16" r="8" fill="none" stroke="%2353c7f0" stroke-width="2"/><circle cx="16" cy="16" r="2.5" fill="%2353c7f0"/><path d="M2 16h5M25 16h5" stroke="%2353c7f0" stroke-width="2"/></svg>'>
+<style>
+:root{--bg:#040813;--ink:#dbe9f5;--cyan:#53c7f0;--dim:#6d8098;--faint:#38485c;
+--line:rgba(83,199,240,.18);
+--mono:ui-monospace,"SF Mono","Cascadia Mono","Segoe UI Mono","Roboto Mono",Menlo,Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--mono);overflow:hidden;
+-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;
+display:grid;place-items:center;
+padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+#sweep{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.tex{position:fixed;inset:0;z-index:1;pointer-events:none}
+.tex.grid{background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+background-size:44px 44px;
+mask-image:radial-gradient(ellipse at 50% 50%,#000 0%,transparent 78%);
+-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 0%,transparent 78%);opacity:.5}
+.tex.scan{background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+.tex.vig{background:radial-gradient(ellipse at 50% 50%,rgba(4,8,19,.10) 0%,rgba(4,8,19,.22) 55%,rgba(0,0,0,.42) 100%)}
+#sweep{-webkit-mask-image:linear-gradient(90deg,#000 0 18%,rgba(0,0,0,.34) 32%,rgba(0,0,0,.34) 68%,#000 82% 100%);
+mask-image:linear-gradient(90deg,#000 0 18%,rgba(0,0,0,.34) 32%,rgba(0,0,0,.34) 68%,#000 82% 100%)}
+main{position:relative;z-index:2;width:100%;max-width:640px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.mark{width:34px;height:34px;flex:none;display:grid;place-items:center;position:relative}
+.mark img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 10px rgba(83,199,240,.35));animation:blink 4.2s ease-in-out infinite}
+.mark svg{width:100%;height:100%}
+@keyframes blink{0%,92%,100%{opacity:1}95%{opacity:.55}}
+.word{font-size:clamp(14px,2.6vw,17px);font-weight:700;letter-spacing:.26em;color:var(--cyan);text-shadow:0 0 14px rgba(83,199,240,.45)}
+.inst{font-size:11px;letter-spacing:.18em;color:var(--dim)}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:2px 0}
+.kicker{font-size:clamp(10px,2.2vw,12px);letter-spacing:.3em;color:var(--cyan);opacity:.9}
+h1{font-size:clamp(26px,8.5vw,46px);line-height:1.05;letter-spacing:.06em;font-weight:700;color:var(--ink);text-shadow:0 0 22px rgba(83,199,240,.28)}
+h1 .num{color:var(--cyan)}
+.sub{font-size:clamp(12px,3.1vw,15px);line-height:1.6;color:var(--dim);max-width:42ch}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:6px;padding:14px 22px;min-height:48px;
+font-size:clamp(11px,2.6vw,13px);letter-spacing:.18em;color:var(--bg);background:var(--cyan);border:1px solid var(--cyan);
+border-radius:2px;text-decoration:none;font-weight:700;transition:box-shadow .2s ease,transform .12s ease,background .2s ease}
+.cta:hover{box-shadow:0 0 24px rgba(83,199,240,.6)}
+.cta:active{transform:translateY(1px)}
+.cta:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.stats{margin-top:10px;display:flex;flex-direction:column;gap:4px;font-size:clamp(10px,2.3vw,12px);color:var(--faint);letter-spacing:.1em}
+.stats b{color:var(--dim);font-weight:400}
+.demoChip{position:fixed;top:max(14px,env(safe-area-inset-top));right:14px;z-index:6;font-size:9.5px;letter-spacing:.22em;
+color:var(--dim);text-decoration:none;border:1px solid var(--faint);padding:8px 11px;background:rgba(4,8,19,.7)}
+.demoChip:hover{color:var(--cyan);border-color:var(--cyan)}
+@media(min-width:760px){main{gap:16px}}
+@media(prefers-reduced-motion:reduce){.cta,.mark img{transition:none;animation:none}.tex.grid{opacity:.35}}
+</style>
+</head>
+<body>
+<canvas id="sweep" aria-hidden="true"></canvas>
+<div class="tex grid" aria-hidden="true"></div>
+<div class="tex scan" aria-hidden="true"></div>
+<div class="tex vig" aria-hidden="true"></div>
+<a class="demoChip" href="../nirakshan.html">404STARTUP &#183; LIVE DEMO</a>
+<main>
+<div class="brand">
+<span class="mark">
+<img id="logo" src="sih.png" alt="NIRAKSHAN logo">
+<svg id="logoFallback" viewBox="0 0 32 32" aria-hidden="true" hidden>
+<circle cx="16" cy="16" r="10" fill="none" stroke="#53c7f0" stroke-width="2"/>
+<circle cx="16" cy="16" r="3" fill="#53c7f0"/>
+<path d="M1 16h6M25 16h6" stroke="#53c7f0" stroke-width="2"/>
+</svg>
+</span>
+<span class="word">NIRAKSHAN</span>
+<span class="inst">PS 26184 &#183; MHA</span>
+</div>
+<div class="rule" aria-hidden="true"></div>
+<p class="kicker">// ROUTE NOT FOUND</p>
+<h1>SIGNAL LOST &#8212; <span class="num">404</span></h1>
+<p class="sub">This page isn't on the grid. The rest of the console is still watching.</p>
+<a class="cta" href="../nirakshan.html">BACK TO THE CASE STUDY &#8594;</a>
+<div class="stats">
+<span><b>INGEST counter:</b> continuing on the main console</span>
+<span><b>PS 26184 &#183; MHA</b></span>
+</div>
+</main>
+<script>
+(function(){
+"use strict";
+var logo=document.getElementById("logo");
+var fb=document.getElementById("logoFallback");
+if(logo){
+ logo.addEventListener("error",function(){
+  logo.hidden=true;
+  if(fb)fb.hidden=false;
+ });
+ if(logo.complete&&logo.naturalWidth===0){
+  logo.hidden=true;
+  if(fb)fb.hidden=false;
+ }
+}
+var cv=document.getElementById("sweep");
+var reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var ctx=cv.getContext("2d");
+var W=0,H=0,dpr=1,raf=null,last=0,angle=0,t0=0;
+var RINGS=4;
+var TICKS=26;
+var contacts=[];
+var nextAnomalyAt=9000;
+var anomalyOffAt=0;
+function rand(a,b){return a+Math.random()*(b-a);}
+function seedContacts(){
+ contacts=[];
+ var n=6;
+ for(var i=0;i<n;i++){
+  contacts.push({
+   ang:(i/n)*Math.PI*2+rand(-0.28,0.28),
+   rad:rand(0.30,0.94),
+   flare:0,
+   red:false
+  });
+ }
+}
+function size(){
+ dpr=Math.min(window.devicePixelRatio||1,2);
+ W=cv.clientWidth;
+ H=cv.clientHeight;
+ cv.width=Math.round(W*dpr);
+ cv.height=Math.round(H*dpr);
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+function paint(rotate,elapsed){
+ ctx.clearRect(0,0,W,H);
+ var cx=W/2,cy=H/2;
+ var R=Math.hypot(W,H)/2;
+ var band=R/4.4;
+ for(var r=1;r<=RINGS;r++){
+  var rr=band*r;
+  ctx.beginPath();
+  ctx.arc(cx,cy,rr,0,Math.PI*2);
+  ctx.strokeStyle="rgba(83,199,240,0.26)";
+  ctx.lineWidth=1.2;
+  ctx.stroke();
+  ctx.beginPath();
+  for(var t=0;t<TICKS;t++){
+   var a=(t/TICKS)*Math.PI*2;
+   var ca=Math.cos(a),sa=Math.sin(a);
+   ctx.moveTo(cx+ca*(rr-5),cy+sa*(rr-5));
+   ctx.lineTo(cx+ca*(rr+5),cy+sa*(rr+5));
+  }
+  ctx.strokeStyle="rgba(83,199,240,0.34)";
+  ctx.lineWidth=1.2;
+  ctx.stroke();
+ }
+ var grd=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
+ grd.addColorStop(0,"rgba(83,199,240,0.42)");
+ grd.addColorStop(0.55,"rgba(83,199,240,0.16)");
+ grd.addColorStop(1,"rgba(83,199,240,0)");
+ ctx.beginPath();
+ ctx.moveTo(cx,cy);
+ ctx.arc(cx,cy,R,rotate-0.34,rotate+0.02);
+ ctx.closePath();
+ ctx.fillStyle=grd;
+ ctx.fill();
+ var ex=cx+Math.cos(rotate)*R,ey=cy+Math.sin(rotate)*R;
+ ctx.beginPath();
+ ctx.moveTo(cx,cy);
+ ctx.lineTo(ex,ey);
+ ctx.strokeStyle="rgba(83,199,240,0.26)";
+ ctx.lineWidth=9;
+ ctx.stroke();
+ ctx.beginPath();
+ ctx.moveTo(cx,cy);
+ ctx.lineTo(ex,ey);
+ ctx.strokeStyle="rgba(200,245,255,0.95)";
+ ctx.lineWidth=2;
+ ctx.stroke();
+ var anyLit=false;
+ for(var q=0;q<contacts.length;q++){
+  if(contacts[q].flare>0.55){anyLit=true;break;}
+ }
+ if(!anyLit){
+  var best=null,bestD=99;
+  for(var w=0;w<contacts.length;w++){
+   var dd=(contacts[w].ang-rotate+Math.PI*3)%(Math.PI*2);
+   if(dd<bestD){bestD=dd;best=contacts[w];}
+  }
+  if(best)best.flare=0.85;
+ }
+ for(var i=0;i<contacts.length;i++){
+  var c=contacts[i];
+  var d=Math.abs(((c.ang-rotate+Math.PI*3)%(Math.PI*2))-Math.PI);
+  if(d<0.20)c.flare=1;
+  else c.flare*=0.955;
+  if(c.red)c.flare=Math.max(c.flare,0.55);
+  var px=cx+Math.cos(c.ang)*band*c.rad*(RINGS/1);
+  var py=cy+Math.sin(c.ang)*band*c.rad*(RINGS/1);
+  var col=c.red?"255,90,90":"150,231,255";
+  ctx.beginPath();
+  ctx.arc(px,py,11+c.flare*20,0,Math.PI*2);
+  ctx.fillStyle="rgba("+col+","+(0.14+c.flare*0.30).toFixed(3)+")";
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(px,py,3.2+c.flare*3.6,0,Math.PI*2);
+  ctx.fillStyle="rgba("+col+","+(0.60+c.flare*0.40).toFixed(3)+")";
+  ctx.fill();
+ }
+}
+function anomalies(elapsed){
+ var hasRed=false;
+ for(var i=0;i<contacts.length;i++){if(contacts[i].red){hasRed=true;break;}}
+ if(elapsed>nextAnomalyAt&&!hasRed){
+  var pick=contacts[Math.floor(Math.random()*contacts.length)];
+  if(pick){
+   pick.red=true;
+   anomalyOffAt=elapsed+5000;
+  }
+  nextAnomalyAt=elapsed+rand(9000,15000);
+ }
+ if(anomalyOffAt&&elapsed>anomalyOffAt){
+  for(var j=0;j<contacts.length;j++)contacts[j].red=false;
+  anomalyOffAt=0;
+ }
+}
+function loop(ts){
+ raf=requestAnimationFrame(loop);
+ if(!t0)t0=ts;
+ if(ts-last<33)return;
+ last=ts;
+ var elapsed=ts-t0;
+ angle+=0.030;
+ anomalies(elapsed);
+ paint(angle,elapsed);
+}
+function start(){
+ if(reduced||raf)return;
+ last=0;
+ raf=requestAnimationFrame(loop);
+}
+function stop(){
+ if(raf)cancelAnimationFrame(raf);
+ raf=null;
+}
+seedContacts();
+size();
+if(reduced){
+ contacts[0].flare=1;
+ contacts[3].flare=0.8;
+ contacts[4].red=true;
+ paint(-Math.PI/3,0);
+}else{
+ start();
+}
+var rt=null;
+window.addEventListener("resize",function(){
+ clearTimeout(rt);
+ rt=setTimeout(function(){
+  size();
+  if(reduced)paint(-Math.PI/3,0);
+ },120);
+});
+document.addEventListener("visibilitychange",function(){
+ if(document.hidden)stop();
+ else if(!reduced)start();
+});
+})();
+</script>
+</body>
+</html>

@@ -30,3 +30,12 @@ library/vapor/radio.html. Each: self-contained, no score, back link to its
 game dir, tap interaction only, measure() guard per rule v5, precached in sw.
 Their buttons are injected into the matching *_page.html by the build_library.sh
 post-pass (matrix, sonar, vapor).
+
+## Client demo artifacts (v8)
+work/<client>/ may host the client's VERBATIM 404 artifact as demo.html.
+Rules: preserve the artifact byte-for-byte except (a) title suffix "- Live
+Demo", (b) a corner demo-chip back-link, (c) retargeting any CTA that assumed
+the client's own domain. Keep noindex meta and built-in asset fallbacks
+(e.g. logo img error->svg). Never refactor or restyle client artifacts.
+The case page's PRIMARY button is SEE IT LIVE -> demo.html; repo links stay
+as inline text mentions only.
