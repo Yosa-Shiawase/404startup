@@ -39,3 +39,13 @@ the client's own domain. Keep noindex meta and built-in asset fallbacks
 (e.g. logo img error->svg). Never refactor or restyle client artifacts.
 The case page's PRIMARY button is SEE IT LIVE -> demo.html; repo links stay
 as inline text mentions only.
+
+## Case pages are demo-only (v9)
+work/<client>/<client>.html must contain ZERO links to client repositories:
+no repo buttons, no inline repo links, no repo meta chips. The live demo
+(demo.html) is the ONLY showcase of a client build; the case page's primary
+button is SEE IT LIVE -> demo.html.
+about.html is the About page (bio + GitHub/LinkedIn/Instagram). All navs must
+include ABOUT -> about.html: nav.js ITEMS, home fullscreen menu, home desktop
+nav, dashboard menu. The home burger is visible at ALL widths (desktop nav and
+burger coexist).

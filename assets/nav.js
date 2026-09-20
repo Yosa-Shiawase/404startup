@@ -7,7 +7,7 @@ var ITEMS=[
  {m:'/library/',l:'LIBRARY'},
  {m:'dashboard.html',l:'DASHBOARD'},
  {m:'/work/',l:'THE WORK'},
- {m:'/404.html',l:'PLAY THE ARCADE →'}
+ {m:'about.html',l:'ABOUT'},{m:'/404.html',l:'PLAY THE ARCADE →'}
 ];
 function isActive(m){
  var p=location.pathname;
@@ -42,7 +42,7 @@ var links=ITEMS.map(function(it,i){
  return '<a href="'+hrefFor(it.m)+'"'+on+'><i>0'+(i+1)+'</i>'+it.l+'</a>';
 }).join('');
 nav.innerHTML='<button class="n4-x" aria-label="Close menu">✕</button>'+links+
- '<div class="n4-soc">GITHUB <a href="https://github.com/Yosa-Shiawase/404startup" target="_blank" rel="noopener">@YOSA-SHIAWASE</a> · INSTAGRAM <a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">@YOSASHIAWASE</a></div>';
+ '<div class="n4-soc">GITHUB <a href="https://github.com/Yosa-Shiawase/404startup" target="_blank" rel="noopener">@YOSA-SHIAWASE</a> · INSTAGRAM <a href="https://www.instagram.com/yosashiawase/" target="_blank" rel="noopener">@YOSASHIAWASE</a> · <a href="https://www.linkedin.com/yosa-shiawase" target="_blank" rel="noopener">LINKEDIN</a></div>';
 document.body.appendChild(scrim);document.body.appendChild(nav);
 var burger=document.createElement('button');
 burger.className='n4-burger';burger.setAttribute('aria-label','Menu');
