@@ -168,6 +168,7 @@ body.orbit .badge{background:#FFB454;color:#0A0E1B}
 <svg viewBox="0 0 32 32" width="30"><polygon points="8,6 13,12 8,13" fill="#C75B26"/><polygon points="24,6 19,12 24,13" fill="#C75B26"/><polygon points="8,12 24,12 16,24" fill="#C75B26"/><polygon points="12,17 20,17 16,22" fill="#3A2A18"/></svg>
 <b>404STARTUP</b><span class="sp"></span>
 <a class="lnk" href="/index.html">&#8592; HOME</a>
+<a class="lnk" href="#" id="rndBtn">RANDOM &#127922;</a>
 <a class="lnk" href="/404.html">ARCADE &#9654;</a>
 </header>
 <h1>THE LIBRARY</h1>
@@ -183,6 +184,7 @@ document.getElementById('cards').innerHTML=N404_GAMES.map(function(g){
  '<div class="art">'+N404_ART[g.id]()+'</div><h3>'+g.title+'</h3><p>'+g.short+'</p>'+
  '<span class="go">VIEW &amp; PLAY &#8594;</span></a>';}).join('');var gcn=document.getElementById('gcount');if(gcn)gcn.textContent=N404_GAMES.length;
 </script>
+<script>(function(){var b=document.getElementById("rndBtn");if(!b)return;b.addEventListener("click",function(e){e.preventDefault();var g=N404_GAMES[Math.floor(Math.random()*N404_GAMES.length)];location.href=g.dir+"/"+g.dir+".html";});})();</script>
 </body></html>
 LIB_EOF
 

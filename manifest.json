@@ -1,0 +1,16 @@
+{
+  "name": "404STARTUP Arcade",
+  "short_name": "404 Arcade",
+  "description": "Twelve playable, fully offline 404 worlds. The internet dies. Play anyway.",
+  "start_url": "/404.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#050805",
+  "theme_color": "#050805",
+  "icons": [
+    {"src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
