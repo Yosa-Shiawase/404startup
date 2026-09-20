@@ -2,29 +2,21 @@
 <html lang="en"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Library — 404STARTUP</title>
+<title>DEJA VU — 404STARTUP</title>
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F2E2C4;color:#3A2A18;-webkit-tap-highlight-color:transparent}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;background:#F2E2C4;color:#3A2A18;-webkit-tap-highlight-color:transparent;min-height:100vh}
 body.orbit{background:#0A0E1B;color:#E9EDF6}
-.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,4vw,44px) 60px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px 60px}
 header{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:2px solid currentColor}
 header b{letter-spacing:.2em;font-size:12px}
 header .sp{flex:1}
 .lnk{font-size:11px;letter-spacing:.12em;color:#C75B26;text-decoration:none;border:1.5px solid #C75B26;padding:8px 12px}
-h1{font-size:clamp(26px,4.5vw,44px);margin:34px 0 6px}
-.lead{opacity:.75;font-size:14px;line-height:1.7;max-width:56ch}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:clamp(14px,2vw,22px);margin-top:28px}
-.card{background:#fff;border:2px solid currentColor;border-radius:6px;text-decoration:none;color:inherit;display:block;overflow:hidden;position:relative;transition:transform .25s,box-shadow .25s}
-.card:hover{transform:translateY(-7px) rotate(-1deg);box-shadow:8px 8px 0 #C75B26}
-body.orbit .card{background:#121A33;border-color:#2A3458}
-.badge{position:absolute;top:10px;right:10px;font-size:8.5px;letter-spacing:.18em;background:#3A2A18;color:#F2E2C4;padding:3px 8px;border-radius:2px;z-index:2}
-body.orbit .badge{background:#FFB454;color:#0A0E1B}
-.card h3{font-size:14px;letter-spacing:.12em;margin:10px 14px 6px}
-.card p{font-size:12.5px;line-height:1.6;opacity:.7;margin:0 14px 12px}
-.card .go{display:inline-block;margin:0 14px 14px;font-size:11.5px;color:#C75B26}
-.art{line-height:0;border-bottom:2px solid currentColor}
+.kick{font-size:10px;letter-spacing:.3em;color:#C75B26;margin:30px 0 8px}
+h1{font-size:clamp(30px,6vw,52px);letter-spacing:.03em;line-height:1.05}
+.tag{display:inline-block;margin-top:8px;font-size:11px;letter-spacing:.24em;color:#C75B26}
+.art{margin:24px 0;border:3px solid currentColor;border-radius:6px;overflow:hidden;box-shadow:10px 10px 0 #C75B26;max-width:640px;line-height:0}
 .art svg{width:100%;height:auto;display:block}
 .art [class^="a-"]{animation-play-state:paused;transform-box:view-box}
 .art:hover [class^="a-"]{animation-play-state:running}
@@ -44,25 +36,39 @@ body.orbit .badge{background:#FFB454;color:#0A0E1B}
 @keyframes kPad{0%,100%{transform:translateX(-46px)}50%{transform:translateX(46px)}}
 @keyframes kRise{from{transform:translateY(40px)}to{transform:translateY(-250px)}}
 @keyframes kBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.desc{font-size:14px;line-height:1.8;opacity:.85;max-width:58ch}
+ul.feats{margin:16px 0 26px;padding-left:20px;line-height:2;font-size:13px;opacity:.8}
+.btn{display:inline-block;background:#C75B26;color:#fff;text-decoration:none;font-size:13px;letter-spacing:.15em;padding:13px 26px;border-radius:4px;box-shadow:4px 4px 0 rgba(0,0,0,.5)}
+.btn.ghost{background:transparent;color:inherit;border:2px solid currentColor;box-shadow:none}
+.pn{margin-top:30px;font-size:12px;letter-spacing:.08em}
+.pn a{color:#C75B26}
 </style></head><body>
 <div class="wrap">
 <header>
 <svg viewBox="0 0 32 32" width="30"><polygon points="8,6 13,12 8,13" fill="#C75B26"/><polygon points="24,6 19,12 24,13" fill="#C75B26"/><polygon points="8,12 24,12 16,24" fill="#C75B26"/><polygon points="12,17 20,17 16,22" fill="#3A2A18"/></svg>
 <b>404STARTUP</b><span class="sp"></span>
-<a class="lnk" href="/index.html">&#8592; HOME</a>
-<a class="lnk" href="/404.html">ARCADE &#9654;</a>
+<a class="lnk" href="../">&#8592; LIBRARY</a>
 </header>
-<h1>THE LIBRARY</h1>
-<p class="lead">Every 404, a different world. Hover a card to see it move. <b id="gcount">12</b> live — the shelf keeps growing.</p>
-<div class="cards" id="cards"></div>
+<div class="kick">// LIBRARY ENTRY 11</div>
+<h1>DEJA VU</h1>
+<span class="tag" id="tag"></span>
+<div class="art" id="art"></div>
+<p class="desc" id="desc"></p>
+<ul class="feats" id="feats"></ul>
+<a class="btn" href="echo.html">&#9654; PLAY DEJA VU</a>
+<a class="btn ghost" href="../" style="margin-left:10px">ALL GAMES</a>
+<p class="pn" id="pn"></p>
 </div>
 <script src="/assets/library-manifest.js"></script>
 <script src="/assets/game-art.js"></script>
 <script>
 if(localStorage.getItem('n404_site_theme')==='orbit')document.body.classList.add('orbit');
-document.getElementById('cards').innerHTML=N404_GAMES.map(function(g){
- return '<a class="card" href="'+g.dir+'/'+g.dir+'_page.html"><span class="badge">'+g.num+'</span>'+
- '<div class="art">'+N404_ART[g.id]()+'</div><h3>'+g.title+'</h3><p>'+g.short+'</p>'+
- '<span class="go">VIEW &amp; PLAY &#8594;</span></a>';}).join('');var gcn=document.getElementById('gcount');if(gcn)gcn.textContent=N404_GAMES.length;
+var id='echo',g=N404_GAMES.find(function(x){return x.id===id});
+document.getElementById('tag').textContent=g.tag;
+document.getElementById('desc').textContent=g.long;
+document.getElementById('feats').innerHTML=g.feats.map(function(f){return '<li>'+f+'</li>'}).join('');
+document.getElementById('art').innerHTML=N404_ART[id]();
+var i=N404_GAMES.indexOf(g),p=N404_GAMES[(i+N404_GAMES.length-1)%N404_GAMES.length],n=N404_GAMES[(i+1)%N404_GAMES.length];
+document.getElementById('pn').innerHTML='<a href="../'+p.dir+'/'+p.dir+'_page.html">&#8592; '+p.title+'</a> &middot; <a href="../'+n.dir+'/'+n.dir+'_page.html">'+n.title+' &#8594;</a>';
 </script>
 </body></html>

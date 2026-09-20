@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>NULL POINTER — 404STARTUP</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>
+html,body{height:100%;margin:0;background:#140C00;overflow:hidden}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;color:#FFB000;
+ -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;overscroll-behavior:none}
+canvas{position:fixed;top:0;left:0;display:block;touch-action:none}
+.hud{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:10px;
+ padding:max(14px,env(safe-area-inset-top)) 16px 8px;pointer-events:none}
+.hud a{pointer-events:auto;color:#FFB000;text-decoration:none;border:1.5px solid rgba(255,176,0,.35);
+ padding:8px 11px;font-size:11px;letter-spacing:.12em}
+.hud .sp{flex:1}
+.chip{font-size:10px;letter-spacing:.14em;opacity:.65}
+.chip b{font-size:12px;opacity:1;min-width:6ch;display:inline-block;text-align:right}
+.title{position:fixed;top:3.6rem;left:50%;transform:translateX(-50%);z-index:9;
+ font-size:11px;font-weight:700;letter-spacing:.3em;color:#FFE2A8;pointer-events:none}
+.hint{position:fixed;top:5.4rem;left:50%;transform:translateX(-50%);z-index:9;
+ font-size:9.5px;letter-spacing:.2em;opacity:.6;animation:hb 1.6s steps(1) infinite;pointer-events:none}
+@keyframes hb{50%{opacity:.2}}
+.panel{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:20;text-align:center;
+ background:#241800;border:2px solid #FFB000;padding:22px 30px;display:none;max-width:88vw}
+.panel.show{display:block}
+.panel .l{font-size:15px;font-weight:800;letter-spacing:.16em;color:#FFE2A8}
+.panel .s{margin-top:10px;font-size:11px;letter-spacing:.14em;opacity:.85}
+.panel .n{margin-top:8px;font-size:10px;letter-spacing:.26em;color:#FFE2A8;display:none}
+.panel .n.show{display:block;animation:hb .9s steps(1) infinite}
+.panel .r{margin-top:16px;font-size:11px;letter-spacing:.18em;animation:hb 1.3s steps(1) infinite}
+.panel a{display:inline-block;margin-top:12px;font-size:10px;letter-spacing:.12em;color:#FFE2A8}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="hud">
+ <a href="../">&#8592; LIBRARY</a><span class="sp"></span>
+ <span class="chip">SCORE <b id="sc">000000</b></span>
+ <span class="chip">BEST <b id="bs">000000</b></span>
+</div>
+<div class="title">NULL POINTER</div>
+<div class="hint" id="hint">DRAG TO MOVE · DON'T DROP THE PACKET</div>
+<div class="panel" id="panel">
+ <div class="l">CONNECTION RESET</div>
+ <div class="s" id="ps"></div>
+ <div class="n" id="pn">— NEW BEST —</div>
+ <div class="r">TAP TO SERVE</div>
+ <a href="pong_page.html">ABOUT THIS GAME →</a>
+</div>
+<script>
+(function(){
+document.addEventListener('gesturestart',function(e){e.preventDefault()});
+document.addEventListener('gesturechange',function(e){e.preventDefault()});
+var cv=document.getElementById('c'),x=cv.getContext('2d');
+var scEl=document.getElementById('sc'),bsEl=document.getElementById('bs'),
+ hintEl=document.getElementById('hint'),panel=document.getElementById('panel'),
+ psEl=document.getElementById('ps'),pnEl=document.getElementById('pn');
+var MONO='ui-monospace,Menlo,Consolas,monospace';
+function pad(n){n=Math.max(0,Math.floor(n));var s=String(n);while(s.length<6)s='0'+s;return s;}
+function rand(a,b){return a+Math.random()*(b-a);}
+var W=0,H=0,U=1,pw=0,ph=0,cw=0,ch=0,br=0;
+var score=0,lives=3,rally=0,rallyPk=0,mode='ready',deadAt=0,flash=0,t=0;
+var ball={x:0,y:0,vx:0,vy:0},spd=0,serveT=0,serveDir=1,wob=0,wobT=0;
+var plx=0,plTarget=0,keyL=false,keyR=false,cpuX=0;
+var best=+(localStorage.getItem('n404_best_pong')||0);
+bsEl.textContent=pad(best);
+var AC=null;
+function tone(f0,f1,dur,type,vol){try{
+ if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+ if(AC.state==='suspended')AC.resume();
+ var T=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+ o.type=type||'square';o.frequency.setValueAtTime(f0,T);
+ o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),T+dur);
+ g.gain.setValueAtTime(.0001,T);g.gain.exponentialRampToValueAtTime(vol||.3,T+.012);
+ g.gain.exponentialRampToValueAtTime(.0001,T+dur);
+ o.connect(g);g.connect(AC.destination);o.start(T);o.stop(T+dur+.05);}catch(e){}}
+function measure(){
+ var vv=window.visualViewport,de=document.documentElement;
+ W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
+ H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
+ W=Math.max(200,Math.round(W));H=Math.max(240,Math.round(H));
+ var D=Math.min(devicePixelRatio||1,2);
+ cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
+ x.setTransform(D,0,0,D,0,0);
+ U=Math.max(.55,Math.min(H/560,W/470,1.4));
+ pw=Math.min(W*.3,110*U);ph=13*U;cw=pw;ch=ph;br=6*U;
+ plx=(W-pw)/2;plTarget=plx;cpuX=(W-cw)/2;
+}
+addEventListener('resize',measure);
+if(window.visualViewport)visualViewport.addEventListener('resize',measure);
+addEventListener('orientationchange',function(){setTimeout(function(){measure();if(mode==='playing')toReady();},160);});
+setInterval(measure,500);
+measure();
+function toReady(){mode='ready';score=0;lives=3;rally=0;rallyPk=0;plx=(W-pw)/2;plTarget=plx;
+ scEl.textContent=pad(0);panel.classList.remove('show');hintEl.style.display='';}
+function start(){mode='playing';hintEl.style.display='none';panel.classList.remove('show');
+ score=0;lives=3;rally=0;rallyPk=0;scEl.textContent=pad(0);serve(1);tone(300,520,.12,'square',.28);}
+function serve(dir){serveDir=dir;serveT=.8;spd=300*U;
+ ball.x=W/2;ball.y=H/2;ball.vx=0;ball.vy=0;wobT=0;}
+function launch(){
+ var a=rand(-.55,.55);ball.vx=spd*Math.sin(a);ball.vy=serveDir*spd*Math.cos(a);}
+function cpuSpd(){return Math.min(150+score*.9,480)*U;}
+function playerHit(){
+ var rel=(ball.x-(plx+pw/2))/(pw/2);rel=Math.max(-1,Math.min(1,rel));
+ var ang=rel*Math.PI/3;spd=Math.min(spd*1.035,950*U);
+ ball.vx=spd*Math.sin(ang);ball.vy=-Math.abs(spd*Math.cos(ang));
+ ball.y=H-70*U-ph-br;
+ rally++;if(rally>rallyPk)rallyPk=rally;
+ score+=10;scEl.textContent=pad(score);
+ tone(560,840,.06,'square',.28);}
+function cpuHit(){
+ var rel=rand(-.3,.3);var ang=rel*Math.PI/4;
+ ball.vx=spd*Math.sin(ang);ball.vy=Math.abs(spd*Math.cos(ang));
+ ball.y=70*U+ch+br;tone(420,560,.06,'square',.26);}
+function cpuMiss(){
+ score+=50;scEl.textContent=pad(score);rally=0;
+ tone(700,1100,.14,'square',.34);tone(1100,1500,.18,'square',.25);
+ if(mode==='playing')serve(-1);}
+function playerMiss(){
+ lives--;flash=1;rally=0;tone(380,60,.35,'sawtooth',.45);
+ if(lives<=0){die();return;}
+ if(mode==='playing')serve(1);}
+function die(){mode='dead';deadAt=Date.now();
+ var nb=score>best;best=Math.max(best,score);
+ localStorage.setItem('n404_best_pong',best);bsEl.textContent=pad(best);
+ psEl.textContent='RALLY PEAK '+rallyPk+' · SCORE '+pad(score);
+ pnEl.classList.toggle('show',nb);
+ setTimeout(function(){panel.classList.add('show');},450);}
+function act(){
+ if(mode==='ready')start();
+ else if(mode==='dead'&&Date.now()-deadAt>450){toReady();start();}}
+addEventListener('keydown',function(e){
+ if(e.key===' '||e.key==='Enter'){e.preventDefault();act();return;}
+ if(e.key==='ArrowLeft'||e.key==='a')keyL=true;
+ if(e.key==='ArrowRight'||e.key==='d')keyR=true;});
+addEventListener('keyup',function(e){
+ if(e.key==='ArrowLeft'||e.key==='a')keyL=false;
+ if(e.key==='ArrowRight'||e.key==='d')keyR=false;});
+cv.addEventListener('pointerdown',function(e){e.preventDefault();act();});
+cv.addEventListener('pointermove',function(e){
+ var r=cv.getBoundingClientRect();plTarget=e.clientX-r.left-pw/2;});
+panel.addEventListener('pointerdown',function(e){e.stopPropagation();act();});
+var last=performance.now(),raf=null;
+function loop(now){raf=requestAnimationFrame(loop);
+ var dt=Math.min((now-last)/1000,.05);last=now;t+=dt;
+ flash=Math.max(0,flash-dt*2.4);
+ if(keyL)plTarget-=60*U;
+ if(keyR)plTarget+=60*U;
+ plTarget=Math.max(0,Math.min(W-pw,plTarget));
+ plx+=(plTarget-plx)*Math.min(1,dt*18);
+ if(mode==='playing'){
+  if(serveT>0){serveT-=dt;if(serveT<=0)launch();}
+  else{
+   wobT-=dt;
+   if(wobT<=0){wobT=.45;wob=rand(-1,1)*pw*.35;}
+   var target=(ball.vy<0?ball.x+wob:(W-cw)/2);
+   var d=target-cpuX,ms=cpuSpd()*dt;
+   cpuX+=Math.max(-ms,Math.min(ms,d));
+   cpuX=Math.max(0,Math.min(W-cw,cpuX));
+   ball.x+=ball.vx*dt;ball.y+=ball.vy*dt;
+   if(ball.x<br){ball.x=br;ball.vx=Math.abs(ball.vx);tone(300,380,.04,'square',.18);}
+   if(ball.x>W-br){ball.x=W-br;ball.vx=-Math.abs(ball.vx);tone(300,380,.04,'square',.18);}
+   if(ball.vy<0&&ball.y-br<=70*U+ch&&ball.x>=cpuX-br&&ball.x<=cpuX+cw+br)cpuHit();
+   if(ball.vy>0&&ball.y+br>=H-70*U-ph&&ball.x>=plx-br&&ball.x<=plx+pw+br)playerHit();
+   if(ball.y-br>H+30)playerMiss();
+   if(ball.y+br<-30)cpuMiss();
+  }}
+ draw();}
+function draw(){
+ x.fillStyle='#140C00';x.fillRect(0,0,W,H);
+ x.save();
+ x.strokeStyle='rgba(255,176,0,.35)';x.lineWidth=2;
+ x.strokeRect(10,70*U-10,W-20,H-140*U+20);
+ x.fillStyle='rgba(255,176,0,.5)';
+ for(var i=0;i<9;i++)x.fillRect(W/2-2,80*U+i*((H-160*U)/9),4,12*U);
+ x.fillStyle='rgba(255,176,0,.08)';
+ for(var i=0;i<14;i++)x.fillRect(0,i*(H/14),W,1);
+ x.shadowColor='#FFB000';x.shadowBlur=14;
+ x.fillStyle='#FFB000';x.fillRect(plx,H-70*U-ph,pw,ph);
+ x.fillStyle='#FFE2A8';x.fillRect(cpuX,70*U,cw,ch);
+ x.shadowBlur=8;
+ x.fillStyle='#FFF3D6';x.fillRect(ball.x-br,ball.y-br,br*2,br*2);
+ x.shadowBlur=0;
+ x.textAlign='center';x.fillStyle='rgba(255,176,0,.6)';
+ x.font='600 '+Math.round(10*U+2)+'px '+MONO;
+ x.fillText(mode==='playing'&&serveT>0?'READY':(mode==='ready'?'TAP TO SERVE':'RALLY '+rally),W/2,H/2-24*U);
+ for(var i=0;i<3;i++){x.beginPath();x.arc(20+i*22,H-24,5,0,6.2832);
+  if(i<lives){x.fillStyle='#FFB000';x.fill();}else{x.strokeStyle='#FF5F56';x.lineWidth=1.5;x.stroke();}}
+ x.fillStyle='rgba(255,176,0,.4)';x.textAlign='left';
+ x.font='600 '+Math.round(9*U+2)+'px '+MONO;
+ x.fillText('PKT '+lives+'/3',20,H-42);
+ if(flash>0){x.fillStyle='rgba(255,95,86,'+(flash*.22)+')';x.fillRect(0,0,W,H);}
+ x.restore();}
+document.addEventListener('visibilitychange',function(){
+ if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null;}
+ else if(!raf){last=performance.now();raf=requestAnimationFrame(loop);}});
+toReady();
+raf=requestAnimationFrame(function(t0){last=t0;raf=requestAnimationFrame(loop);});
+})();
+</script></body></html>

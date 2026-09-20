@@ -171,7 +171,7 @@ body.orbit .badge{background:#FFB454;color:#0A0E1B}
 <a class="lnk" href="/404.html">ARCADE &#9654;</a>
 </header>
 <h1>THE LIBRARY</h1>
-<p class="lead">Every 404, a different world. Hover a card to see it move. Eight live today — the shelf keeps growing.</p>
+<p class="lead">Every 404, a different world. Hover a card to see it move. <b id="gcount">12</b> live — the shelf keeps growing.</p>
 <div class="cards" id="cards"></div>
 </div>
 <script src="/assets/library-manifest.js"></script>
@@ -181,7 +181,7 @@ if(localStorage.getItem('n404_site_theme')==='orbit')document.body.classList.add
 document.getElementById('cards').innerHTML=N404_GAMES.map(function(g){
  return '<a class="card" href="'+g.dir+'/'+g.dir+'_page.html"><span class="badge">'+g.num+'</span>'+
  '<div class="art">'+N404_ART[g.id]()+'</div><h3>'+g.title+'</h3><p>'+g.short+'</p>'+
- '<span class="go">VIEW &amp; PLAY &#8594;</span></a>';}).join('');
+ '<span class="go">VIEW &amp; PLAY &#8594;</span></a>';}).join('');var gcn=document.getElementById('gcount');if(gcn)gcn.textContent=N404_GAMES.length;
 </script>
 </body></html>
 LIB_EOF

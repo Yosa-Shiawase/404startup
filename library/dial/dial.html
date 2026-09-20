@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>DIAL-UP 56K — 404STARTUP</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>
+html,body{height:100%;margin:0;background:#171008;overflow:hidden}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;color:#FFCE8A;
+ -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;overscroll-behavior:none}
+canvas{position:fixed;top:0;left:0;display:block;touch-action:none}
+.hud{position:fixed;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:10px;
+ padding:max(14px,env(safe-area-inset-top)) 16px 8px;pointer-events:none}
+.hud a{pointer-events:auto;color:#FFCE8A;text-decoration:none;border:1.5px solid rgba(255,206,138,.35);
+ padding:8px 11px;font-size:11px;letter-spacing:.12em}
+.hud .sp{flex:1}
+.chip{font-size:10px;letter-spacing:.14em;opacity:.65}
+.chip b{font-size:12px;opacity:1;min-width:6ch;display:inline-block;text-align:right}
+.title{position:fixed;top:3.6rem;left:50%;transform:translateX(-50%);z-index:9;
+ font-size:11px;font-weight:700;letter-spacing:.3em;color:#FF9E3D;pointer-events:none}
+.hint{position:fixed;top:5.4rem;left:50%;transform:translateX(-50%);z-index:9;
+ font-size:9.5px;letter-spacing:.2em;opacity:.6;animation:hb 1.6s steps(1) infinite;pointer-events:none}
+@keyframes hb{50%{opacity:.2}}
+.panel{position:fixed;left:50%;top:42%;transform:translate(-50%,-50%);z-index:20;text-align:center;
+ background:#241708;border:2px solid #FFCE8A;padding:22px 30px;display:none;max-width:88vw}
+.panel.show{display:block}
+.panel .l{font-size:15px;font-weight:800;letter-spacing:.16em;color:#FF9E3D}
+.panel .s{margin-top:10px;font-size:11px;letter-spacing:.14em;opacity:.85}
+.panel .n{margin-top:8px;font-size:10px;letter-spacing:.26em;color:#FF9E3D;display:none}
+.panel .n.show{display:block;animation:hb .9s steps(1) infinite}
+.panel .r{margin-top:16px;font-size:11px;letter-spacing:.18em;animation:hb 1.3s steps(1) infinite}
+.panel a{display:inline-block;margin-top:12px;font-size:10px;letter-spacing:.12em;color:#FF9E3D}
+</style></head><body>
+<canvas id="c"></canvas>
+<div class="hud">
+ <a href="../">&#8592; LIBRARY</a><span class="sp"></span>
+ <span class="chip">SCORE <b id="sc">000000</b></span>
+ <span class="chip">BEST <b id="bs">000000</b></span>
+</div>
+<div class="title">DIAL-UP 56K</div>
+<div class="hint" id="hint">TAP WHEN THE NEEDLE CROSSES THE BAND</div>
+<div class="panel" id="panel">
+ <div class="l">CONNECTION LOST</div>
+ <div class="s" id="ps"></div>
+ <div class="n" id="pn">— NEW BEST —</div>
+ <div class="r">TAP TO REDIAL</div>
+ <a href="dial_page.html">ABOUT THIS GAME →</a>
+</div>
+<script>
+(function(){
+document.addEventListener('gesturestart',function(e){e.preventDefault()});
+document.addEventListener('gesturechange',function(e){e.preventDefault()});
+var cv=document.getElementById('c'),x=cv.getContext('2d');
+var scEl=document.getElementById('sc'),bsEl=document.getElementById('bs'),
+ hintEl=document.getElementById('hint'),panel=document.getElementById('panel'),
+ psEl=document.getElementById('ps'),pnEl=document.getElementById('pn');
+var MONO='ui-monospace,Menlo,Consolas,monospace';
+function pad(n){n=Math.max(0,Math.floor(n));var s=String(n);while(s.length<6)s='0'+s;return s;}
+function rand(a,b){return a+Math.random()*(b-a);}
+var W=0,H=0,U=1,track={x:0,y:0,w:0},needle=0,dir=1,speed=0,band={x:0,w:0};
+var score=0,level=1,lives=3,mode='ready',deadAt=0,shake=0,flash=0,t=0;
+var best=+(localStorage.getItem('n404_best_dial')||0);
+bsEl.textContent=pad(best);
+var AC=null;
+function tone(f0,f1,dur,type,vol){try{
+ if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();
+ if(AC.state==='suspended')AC.resume();
+ var T=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();
+ o.type=type||'square';o.frequency.setValueAtTime(f0,T);
+ o.frequency.exponentialRampToValueAtTime(Math.max(f1,1),T+dur);
+ g.gain.setValueAtTime(.0001,T);g.gain.exponentialRampToValueAtTime(vol||.3,T+.012);
+ g.gain.exponentialRampToValueAtTime(.0001,T+dur);
+ o.connect(g);g.connect(AC.destination);o.start(T);o.stop(T+dur+.05);}catch(e){}}
+function measure(){
+ var vv=window.visualViewport,de=document.documentElement;
+ W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
+ H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
+ W=Math.max(200,Math.round(W));H=Math.max(240,Math.round(H));
+ var D=Math.min(devicePixelRatio||1,2);
+ cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
+ x.setTransform(D,0,0,D,0,0);
+ U=Math.max(.55,Math.min(H/560,W/470,1.4));
+ track.w=Math.min(W*.8,380*U);track.x=(W-track.w)/2;track.y=Math.round(H*.46);
+ if(mode==='ready')needle=track.x;
+ band.w=track.w*.34;
+ band.x=track.x+track.w*.33;
+}
+addEventListener('resize',measure);
+if(window.visualViewport)visualViewport.addEventListener('resize',measure);
+addEventListener('orientationchange',function(){setTimeout(function(){measure();if(mode==='playing')toReady();},160);});
+setInterval(measure,500);
+measure();
+function toReady(){mode='ready';score=0;level=1;lives=3;speed=240*U;band.w=track.w*.34;
+ needle=track.x;dir=1;scEl.textContent=pad(0);panel.classList.remove('show');hintEl.style.display='';newBand();}
+function newBand(){band.x=rand(track.x+6,track.x+track.w-band.w-6);}
+function start(){mode='playing';hintEl.style.display='none';panel.classList.remove('show');tone(300,520,.12,'square',.28);}
+function hit(){
+ var perfect=Math.abs(needle-(band.x+band.w/2))<band.w*.11;
+ if(perfect){score+=25+level*3;tone(660,990,.09,'square',.35);tone(990,1320,.12,'square',.3);}
+ else{score+=10+level*2;tone(520,700,.08,'square',.3);}
+ level++;band.w=Math.max(track.w*.10,band.w*.90);
+ speed=Math.min(720*U,speed*1.07);scEl.textContent=pad(score);newBand();
+}
+function miss(){
+ lives--;flash=1;shake=8;tone(380,60,.35,'sawtooth',.45);
+ if(lives<=0){die();return;}
+ speed=Math.max(180*U,speed*.95);newBand();
+}
+function die(){mode='dead';deadAt=Date.now();hideMid();
+ var nb=score>best;best=Math.max(best,score);
+ localStorage.setItem('n404_best_dial',best);bsEl.textContent=pad(best);
+ psEl.textContent='DROPPED AT LEVEL '+level+' · SCORE '+pad(score);
+ pnEl.classList.toggle('show',nb);
+ setTimeout(function(){panel.classList.add('show');},450);}
+function hideMid(){hintEl.style.display='none';}
+function act(){
+ if(mode==='ready')start();
+ else if(mode==='playing'){var inBand=needle>=band.x&&needle<=band.x+band.w;inBand?hit():miss();}
+ else if(mode==='dead'&&Date.now()-deadAt>450){toReady();start();}
+}
+addEventListener('keydown',function(e){if(e.key===' '||e.key==='Enter'){e.preventDefault();act();}});
+cv.addEventListener('pointerdown',function(e){e.preventDefault();act();});
+panel.addEventListener('pointerdown',function(e){e.stopPropagation();act();});
+var last=performance.now(),raf=null;
+function loop(now){raf=requestAnimationFrame(loop);
+ var dt=Math.min((now-last)/1000,.05);last=now;t+=dt;
+ shake=Math.max(0,shake-dt*26);flash=Math.max(0,flash-dt*2.4);
+ if(mode==='playing'){
+  needle+=dir*speed*dt;
+  if(needle>track.x+track.w){needle=track.x+track.w;dir=-1;}
+  if(needle<track.x){needle=track.x;dir=1;}}
+ draw();}
+function rr(a,b,w,h,r){x.beginPath();
+ x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);
+ x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath();}
+function draw(){
+ x.fillStyle='#171008';x.fillRect(0,0,W,H);
+ x.save();
+ if(shake>0)x.translate(rand(-shake,shake),rand(-shake,shake));
+ var mw=Math.min(W*.88,420*U),mh=200*U,mx=(W-mw)/2,my=H*.22;
+ x.fillStyle='#241708';rr(mx,my,mw,mh,10*U);x.fill();
+ x.strokeStyle='#5A3A16';x.lineWidth=2;x.stroke();
+ x.fillStyle='#FFCE8A';x.font='700 '+Math.round(11*U+3)+'px '+MONO;x.textAlign='left';
+ x.fillText('N404 MODEM 56K',mx+16*U,my+22*U);
+ var lc=[mode==='dead'?'#FF5F56':'#27C93F','#FFBD2E','#FF9E3D'];
+ for(var i=0;i<3;i++){x.fillStyle=lc[i];x.globalAlpha=(t*2+i)%1<.75?1:.35;
+  x.beginPath();x.arc(mx+mw-24*U-i*20*U,my+18*U,5*U,0,6.2832);x.fill();}
+ x.globalAlpha=1;
+ x.fillStyle='#3A2410';rr(mx+16*U,track.y-9*U,track.w,18*U,9*U);x.fill();
+ x.fillStyle='#FF9E3D';rr(band.x,track.y-9*U,band.w,18*U,9*U);x.fill();
+ x.fillStyle='rgba(255,255,255,.25)';x.fillRect(band.x+band.w/2-1.5*U,track.y-9*U,3*U,18*U);
+ x.fillStyle='#FFF3D6';x.fillRect(needle-2*U,track.y-16*U,4*U,32*U);
+ x.fillStyle='#FFCE8A';x.textAlign='center';
+ x.font='800 '+Math.round(17*U+6)+'px '+MONO;
+ x.fillText('LEVEL '+level,W/2,track.y+62*U);
+ x.font='600 '+Math.round(10*U+2)+'px '+MONO;x.fillStyle='rgba(255,206,138,.6)';
+ var st=lives===3?'SIGNAL STRONG':(lives===2?'SIGNAL UNSTABLE':'SIGNAL CRITICAL');
+ x.fillText(st,W/2,track.y+84*U);
+ for(var i=0;i<3;i++){x.beginPath();x.arc(20+i*22,H-24,5,0,6.2832);
+  if(i<lives){x.fillStyle='#27C93F';x.fill();}else{x.strokeStyle='#FF5F56';x.lineWidth=1.5;x.stroke();}}
+ if(flash>0){x.fillStyle='rgba(255,95,86,'+(flash*.22)+')';x.fillRect(0,0,W,H);}
+ x.restore();}
+document.addEventListener('visibilitychange',function(){
+ if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null;}
+ else if(!raf){last=performance.now();raf=requestAnimationFrame(loop);}});
+toReady();
+raf=requestAnimationFrame(function(t0){last=t0;raf=requestAnimationFrame(loop);});
+})();
+</script></body></html>
