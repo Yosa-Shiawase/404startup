@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>The Archive — Waiting Room — 404STARTUP</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<style>
+html,body{height:100%;margin:0;background:#171310;overflow:hidden}
+body{font-family:ui-monospace,Menlo,Consolas,monospace;color:#F2E2C4;
+ -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:none;overscroll-behavior:none}
+canvas{position:fixed;top:0;left:0;display:block;touch-action:none}
+.scan{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.35;
+ background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0 1px,transparent 1px 3px)}
+.back{position:fixed;top:max(14px,env(safe-area-inset-top));left:14px;z-index:5;color:#F2E2C4;text-decoration:none;
+ border:1px solid rgba(242,226,196,.3);padding:9px 13px;font-size:11px;letter-spacing:.14em;background:rgba(23,19,16,.75)}
+.back:hover{border-color:#E0A458}
+.big{position:fixed;left:50%;transform:translateX(-50%);bottom:max(46px,env(safe-area-inset-bottom));z-index:5;
+ text-align:center;pointer-events:none;width:94vw}
+.big .t{font-size:clamp(15px,3vw,24px);font-weight:800;letter-spacing:.3em;color:#E0A458;
+ text-shadow:0 0 16px rgba(224,164,88,.5)}
+.big .s{margin-top:6px;font-size:clamp(10px,1.8vw,13px);letter-spacing:.14em;opacity:.65}
+.tag{position:fixed;left:50%;transform:translateX(-50%);z-index:5;font-size:9.5px;letter-spacing:.28em;
+ opacity:.45;width:94vw;text-align:center;white-space:nowrap;animation:hb 1.8s steps(1) infinite}
+@keyframes hb{50%{opacity:.15}}
+#toast{position:fixed;left:50%;top:22%;transform:translateX(-50%);z-index:6;
+ background:rgba(23,19,16,.92);border:1.5px solid #E0A458;color:#F2E2C4;
+ padding:12px 18px;font-size:11.5px;letter-spacing:.12em;display:none;text-align:center;max-width:84vw;pointer-events:none}
+#toast.show{display:block;animation:tin .25s ease}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-8px)}}
+</style></head><body>
+<canvas id="c"></canvas><div class="scan"></div>
+<a class="back" href="..">&#8592; THE LIBRARY</a>
+<div class="big"><div class="t">THE ARCHIVE</div>
+<div class="s">Your page is in here somewhere. It's in no hurry.</div></div>
+<div class="tag" id="tag">WAITING ROOM &#183; TAP A FALLING PAGE TO READ IT</div>
+<div id="toast"></div>
+<script>
+(function(){
+document.addEventListener('gesturestart',function(e){e.preventDefault()});
+document.addEventListener('gesturechange',function(e){e.preventDefault()});
+var cv=document.getElementById('c'),x=cv.getContext('2d');
+var toast=document.getElementById('toast'),tagEl=document.getElementById('tag');
+var W=0,H=0;
+var FRAG=[
+ '...the requested page was last seen near /lost/...',
+ '...filed under 404, subfolder: forgotten...',
+ '...retrieval attempt 8471: inconclusive...',
+ '...this document predates the current internet...',
+ '...if found, the fox knows where...',
+ '...shelved between "gone" and "gone"...',
+ '...contents: one URL, slightly faded...',
+ '...do not fold, spindle, or redirect...',
+ '...last borrowed by: nobody, ever...',
+ '...return address: /nowhere/important...'
+];
+var SHADES=['#D9CBA8','#CFC29E','#E2D5B2'];
+function measure(){
+ if(measure.lw===W&&measure.lh===H)return;
+ measure.lw=W;measure.lh=H;
+ var vv=window.visualViewport,de=document.documentElement;
+ W=Math.min(vv?vv.width:innerWidth,de.clientWidth||innerWidth);
+ H=Math.min(vv?vv.height:innerHeight,de.clientHeight||innerHeight);
+ W=Math.max(200,Math.round(W));H=Math.max(240,Math.round(H));
+ var D=Math.min(devicePixelRatio||1,2);
+ cv.width=W*D;cv.height=H*D;cv.style.width=W+'px';cv.style.height=H+'px';
+ x.setTransform(D,0,0,D,0,0);
+ tagEl.style.top=Math.round(H-26)+'px';
+}
+addEventListener('resize',measure);
+if(window.visualViewport){visualViewport.addEventListener('resize',measure);visualViewport.addEventListener('scroll',measure);}
+addEventListener('orientationchange',function(){setTimeout(measure,150)});
+setInterval(measure,500);
+measure();
+function mkPage(golden){
+ var pw=Math.min(W*.16,74);
+ return {x:Math.random()*(W-pw*2)+pw*.5,y:-120,
+  w:pw,h:pw*1.3,vy:26+Math.random()*34,rot:(Math.random()-.5)*.6,vr:(Math.random()-.5)*.5,
+  shade:SHADES[Math.floor(Math.random()*3)],flip:Math.random()*6.28,
+  golden:!!golden,frag:FRAG[Math.floor(Math.random()*FRAG.length)],
+  held:0,heldT:0};
+}
+var pages=[],motes=[],spawnT=0,goldT=6,t=0;
+function spawn(){pages.push(mkPage(false));}
+for(var i=0;i<6;i++){var p0=mkPage(false);p0.y=Math.random()*innerHeight;pages.push(p0);}
+for(var i=0;i<40;i++)motes.push({x:Math.random(),y:Math.random(),r:.8+Math.random()*1.8,v:2+Math.random()*6,ph:Math.random()*6.28});
+function toastMsg(s){toast.textContent=s;toast.classList.add('show');
+ clearTimeout(toast.tid);toast.tid=setTimeout(function(){toast.classList.remove('show');},2400);}
+addEventListener('pointerdown',function(e){
+ for(var i=0;i<pages.length;i++){var p=pages[i];
+  var hw=p.w*.65;
+  if(Math.abs(e.clientX-p.x)<hw&&Math.abs(e.clientY-p.y)<hw){
+   p.held=1;p.heldT=2.2;
+   toastMsg(p.golden?('YOUR PAGE: '+p.frag):('ARCHIVE NOTE: '+p.frag));
+   return;}}
+});
+var last=performance.now(),raf=null;
+function loop(now){
+ raf=requestAnimationFrame(loop);
+ var dt=Math.min((now-last)/1000,.05);last=now;t+=dt;
+ x.fillStyle='#171310';x.fillRect(0,0,W,H);
+ var lg=x.createLinearGradient(W*.15,0,W*.4,0);
+ lg.addColorStop(0,'rgba(224,164,88,0)');lg.addColorStop(.5,'rgba(224,164,88,.07)');lg.addColorStop(1,'rgba(224,164,88,0)');
+ x.fillStyle=lg;x.fillRect(0,0,W,H);
+ x.fillStyle='rgba(224,164,88,.25)';
+ for(var i=0;i<motes.length;i++){var m=motes[i];
+  m.y-=m.v/H*dt*8;if(m.y<-.02)m.y=1.02;
+  var mx=m.x*W+Math.sin(t*.6+m.ph)*8;
+  x.globalAlpha=.15+.2*Math.abs(Math.sin(t+m.ph));
+  x.beginPath();x.arc(mx,m.y*H,m.r,0,6.2832);x.fill();}
+ x.globalAlpha=1;
+ goldT-=dt;
+ if(goldT<=0&&pages.length<14){pages.push(mkPage(true));goldT=7+Math.random()*6;}
+ spawnT-=dt;
+ if(spawnT<=0&&pages.length<14){spawn();spawnT=.7+Math.random()*1.1;}
+ for(var i=pages.length-1;i>=0;i--){var p=pages[i];
+  if(p.held>0){p.heldT-=dt;if(p.heldT<=0)p.held=0;}
+  else p.y+=p.vy*dt;
+  p.flip+=p.vr*dt;
+  if(p.y>H+140){pages.splice(i,1);continue;}
+  var fl=Math.abs(Math.sin(p.flip));
+  var w=p.w*(0.75+.25*fl);
+  x.save();x.translate(p.x,p.y);x.rotate(p.rot);
+  x.fillStyle=p.shade;
+  x.globalAlpha=p.golden?1:.88;
+  x.fillRect(-w/2,-p.h/2,w,p.h);
+  x.fillStyle='rgba(58,42,24,.28)';
+  x.fillRect(-w/2,-p.h/2,w,2);
+  if(fl>.5){
+   x.fillStyle='rgba(58,42,24,.45)';
+   for(var L=0;L<5;L++)x.fillRect(-w*.3,-p.h*.28+L*p.h*.15,w*(.35+.4*Math.abs(Math.sin(p.flip*2+L))),2);
+  }
+  if(p.held>0){
+   x.strokeStyle='#E0A458';x.lineWidth=2;
+   x.globalAlpha=Math.min(1,p.heldT);
+   x.strokeRect(-w/2-4,-p.h/2-4,w+8,p.h+8);
+   x.fillStyle='#E0A458';x.font='700 10px ui-monospace,Menlo,monospace';x.textAlign='center';
+   x.fillText('FILED',0,-p.h/2-9);
+  }
+  x.globalAlpha=1;x.restore();}
+ raf=(function(n){return n;})(raf);
+}
+function frame(now){loop(now);}
+raf=requestAnimationFrame(function(t0){last=t0;raf=requestAnimationFrame(loop);});
+document.addEventListener('visibilitychange',function(){
+ if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=null;}
+ else if(!raf){last=performance.now();raf=requestAnimationFrame(loop);}});
+})();
+</script></body></html>

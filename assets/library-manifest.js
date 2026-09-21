@@ -17,4 +17,9 @@ window.N404_GAMES=[{id:"dunes",type:"game",tags:["runner","reflex"],dir:"fox",nu
  short:"The site is down and everyone wants you. Serve requests before their patience rings expire.",
  long:"You are the lone admin of a dead website, and the world keeps knocking. Mail, tickets, calls arrive as clock-badges with a draining patience ring. Hold your cursor on one to serve it — chains of serves build combos. Let three rings empty and the shift is over.",
  feats:["Hold-to-serve with combo chains","Patience rings shrink as you score","Pointer or keyboard control"]}
+,
+{id:"archive",type:"waiting",tags:["ambient","mood"],dir:"archive",num:"W1",title:"THE ARCHIVE",tag:"WAITING ROOM",
+ short:"An office of falling paper. Tap a page to read where your request went.",
+ long:"The archive's reading room: documents drift down forever, dust drifts up, and every so often your missing page tumbles past with a fragment of its own history. Tap to hold it still, read, let go. No score. The room is the point.",
+ feats:["Endless procedural paper-fall","Tap to freeze and read archive notes","Pure mood - no score by design"]}
 ];
